@@ -1,37 +1,18 @@
-import requests
-import os
-import zipfile
 import subprocess
-from django.http import JsonResponse
+import logging
+import time
 
 def start_server(request):
     # Define the directory and path for steamcmd
     print("START")
     steamcmd_dir = 'steamcmd'
     steamcmd_path = os.path.join(steamcmd_dir, 'steamcmd.exe')
-    
-    # Check if SteamCMD exists, if not download it
+
     if not os.path.exists(steamcmd_path):
-        # Download SteamCMD
-        url = 'https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip'
-        response = requests.get(url)
-        
-        # Create the steamcmd directory if it doesn't exist
-        os.makedirs(steamcmd_dir, exist_ok=True)
-        
-        # Save the downloaded zip file
-        zip_path = os.path.join(steamcmd_dir, 'steamcmd.zip')
-        with open(zip_path, 'wb') as file:
-            file.write(response.content)
-        
-        # Extract the zip file
-        with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-            zip_ref.extractall(steamcmd_dir)
-        
-        # Remove the zip file
-        os.remove(zip_path)
-    
-    # Run SteamCMD
+        logging.error("steamcmd.exe not found")
+        return "steamcmd.exe not found"
+
+    # Start steamcmd.exe
     process = subprocess.Popen([steamcmd_path], cwd=steamcmd_dir, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     
     installation_complete = False
