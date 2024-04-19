@@ -1,10 +1,11 @@
 from django.contrib import admin
 from django.urls import path, include
-from . import views
+from .views import start_server, test
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('download_steamcmd', views.download_steamcmd, name="download_steamcmd"),
-    path('run_steamcmd', views.run_steamcmd, name="run_steamcmd"),    
+    path('start_server', start_server, name="start_server"),
+    path('test', test, name="test"),
+       
 ]

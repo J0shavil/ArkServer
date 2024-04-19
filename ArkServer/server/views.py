@@ -4,8 +4,9 @@ import zipfile
 import subprocess
 from django.http import JsonResponse
 
-def start_ark_server_view(request):
+def start_server(request):
     # Define the directory and path for steamcmd
+    print("START")
     steamcmd_dir = 'steamcmd'
     steamcmd_path = os.path.join(steamcmd_dir, 'steamcmd.exe')
     
@@ -37,7 +38,7 @@ def start_ark_server_view(request):
     
     for line in iter(process.stdout.readline, ''):
         # Check for specific patterns or lines
-        if "loading steam API...OK" in line:
+        if "Loading Steam API...OK" in line:
             process.stdin.write('login anonymous\n')
             process.stdin.flush()
             
@@ -46,6 +47,7 @@ def start_ark_server_view(request):
             process.stdin.flush()
             
         elif "Success! App '2430930' fully installed." in line:
+            print("installed")
             installation_complete = True
     
     # Read remaining output
@@ -57,3 +59,7 @@ def start_ark_server_view(request):
         output += "\nInstallation complete!"
     
     return JsonResponse({'output': output})
+
+def test(request):
+    print("TEST")
+    return JsonResponse({'output': 'TEST'})
