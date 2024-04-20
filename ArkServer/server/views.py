@@ -6,7 +6,9 @@ from rest_framework import status
 
 logging.basicConfig(level=logging.INFO)
 
-steamcmd_path = "\Users\josh_\OneDrive\Documentos\ArkServer\ArkServer\ArkServer\steamcmd"
+steamcmd_path = "C:\\Users\\josh_\\OneDrive\\Documentos\\ArkServer\\ArkServer\\ArkServer\\steamcmd"
+
+
 
 class StartArkServer(APIView):
 
