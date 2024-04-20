@@ -6,12 +6,14 @@ from rest_framework import status
 
 logging.basicConfig(level=logging.INFO)
 
+steamcmd_path = "C:\\path_to_steamcmd\\steamcmd.exe"
+
 class StartArkServer(APIView):
 
     def run_steamcmd(self):
         try:
             result = subprocess.run(
-                ["steamcmd", "+login", "anonymous", "+app_update", "2430930", "+quit"],
+                [steamcmd_path, "+login", "anonymous", "+app_update", "2430930", "+quit"],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True
