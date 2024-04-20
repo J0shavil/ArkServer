@@ -54,7 +54,7 @@ class StartArkServer(APIView):
             if read_output_until_line_contains(target_line):
                 logging.info(f"Sending command: {cmd}")
                 process.stdin.write(f"{cmd}\n")
-                process.stdin.flush()
+                process.stdin.flush()  # Explicitly flush stdin
                 time.sleep(2)  # Sleep for 2 seconds to allow time for command processing
             else:
                 logging.warning(f"Failed to receive '{target_line}' output before sending {cmd} command")
