@@ -40,11 +40,9 @@ def run_steamcmd():
 
     commands = [
         ("Loading Steam API...OK", "login anonymous", 30),
-        ("Connecting anonymously to Steam Public...OK", "app_update 2430930 validate", 600),
-        ("Success! App '2430930' fully installed.", "quit", 30),
+        ("Success! App '2430930' fully installed.", "app_update 2430930 validate", 600),
+        ("logout", "quit", 30),
     ]
-
-    # Waiting for user info...OK
 
     for target_line, cmd, timeout in commands:
         logging.info(f"Waiting for: {target_line}")
@@ -57,6 +55,10 @@ def run_steamcmd():
         
         process.stdin.write(f"{cmd}\n")
         process.stdin.flush()
+
+        # Read and log the entire output after sending the command
+        process_output = process.stdout.read().strip()
+        logging.info(f"Full output after sending {cmd}: {process_output}")
 
     return Response({"output": "steamcmd commands completed"})
 
