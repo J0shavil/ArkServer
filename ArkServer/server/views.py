@@ -85,9 +85,15 @@ def run_steamcmd():
         process.stdin.write(f"{cmd}\n")
         process.stdin.flush()
 
-        if not read_output_until_line_contains(target_line, timeout):
-            logging.warning(f"Failed to receive expected output: {target_line}")
-            return f"Failed to execute command: {cmd}"
+        if cmd == "login anonymous":
+            if not read_output_until_line_contains(target_line, 30):
+                logging.warning(f"Failed to receive '{target_line}' output after sending {cmd} command")
+                return f"Failed to execute {cmd} command: {target_line} not received"
+            
+        else:
+            if not read_output_until_line_contains(target_line, timeout):
+                logging.warning(f"Failed to receive expected output: {target_line}")
+                return f"Failed to execute command: {cmd}"
 
         time.sleep(2)  # Add a small delay before sending the next command
 
@@ -100,6 +106,7 @@ def run_steamcmd():
     logging.info(f"steamcmd process exit status: {exit_status}")
 
     return "steamcmd commands completed"
+
 
 
 
