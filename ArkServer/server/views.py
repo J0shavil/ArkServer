@@ -2,6 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 import subprocess
+import threading
 import time
 import logging
 
@@ -13,20 +14,21 @@ class StartArkServer(APIView):
         steamcmd_dir = 'steamcmd'  # Update with your actual path
         steamcmd_path = f"{steamcmd_dir}/steamcmd.exe"
 
-        process = subprocess.Popen([steamcmd_path], cwd=steamcmd_dir, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        process = subprocess.Popen(
+            [steamcmd_path], 
+            cwd=steamcmd_dir, 
+            stdin=subprocess.PIPE, 
+            stdout=subprocess.PIPE, 
+            stderr=subprocess.PIPE, 
+            text=True,
+            bufsize=1  # Line buffered
+        )
 
-        def read_output_with_timeout(timeout=10):
-            start_time = time.time()
-            while True:
-                if time.time() - start_time > timeout:
-                    logging.warning("Timeout reached while waiting for response after sending command")
-                    break
-                
-                output_line = process.stdout.readline().strip()
-                if output_line:
-                    logging.info(f"Received after sending command: {output_line}")
-                    if any(target in output_line for target in ["Steam>", "Connecting anonymously to Steam Public...OK", "Waiting for client config...OK", "Waiting for user info...OK"]):
-                        return True
+        def read_output():
+            for line in iter(process.stdout.readline, ''):
+                logging.info(f"steamcmd output: {line.strip()}")
+                if any(target in line for target in ["Steam>", "Connecting anonymously to Steam Public...OK", "Waiting for client config...OK", "Waiting for user info...OK"]):
+                    return True
             return False
 
         commands = [
@@ -37,19 +39,14 @@ class StartArkServer(APIView):
 
         for target_line, cmd, timeout in commands:
             logging.info(f"Waiting for: {target_line}")
-            
-            start_time = time.time()
-            
-            if not read_output_with_timeout():
+
+            if not read_output():
                 logging.warning("No response received after sending command")
                 break
-                
-            write_result = process.stdin.write(cmd)
+
+            logging.info(f"Sending command: {cmd.strip()}")
+            process.stdin.write(cmd)
             process.stdin.flush()
-            
-            logging.info(f"Write result: {write_result}")
-            
-            time.sleep(1)  # Adding a delay to allow the command to be processed
 
     def post(self, request, *args, **kwargs):
         try:
