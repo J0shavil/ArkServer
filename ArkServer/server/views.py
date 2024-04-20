@@ -39,10 +39,12 @@ def run_steamcmd():
     process = subprocess.Popen([steamcmd_path], cwd=steamcmd_dir, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
     commands = [
-        ("Loading Steam API...OK", "Steam>login anonymous", 30),
+        ("Loading Steam API...OK", "login anonymous", 30),
         ("Waiting for user info...OK", "app_update 2430930 validate", 600),
         ("Success! App '2430930' fully installed.", "quit", 30),
     ]
+
+    full_output = []  # To store the full output
 
     for target_line, cmd, timeout in commands:
         logging.info(f"Waiting for: {target_line}")
@@ -57,23 +59,32 @@ def run_steamcmd():
         process.stdin.flush()
 
         # Read and log the entire output after sending the command
-        output_lines = []
+        cmd_output = []
         cmd_sent = False
         while True:
             output_line = process.stdout.readline().strip()
             if output_line:
                 logging.info(f"steamcmd output: {output_line}")
-                output_lines.append(output_line)
+                full_output.append(output_line)
+                cmd_output.append(output_line)
                 
                 if target_line in output_line:
                     logging.info(f"Received target line: {target_line}")
                     cmd_sent = True
 
                 if cmd_sent and any(cmd in output_line for cmd in ["Connecting anonymously to Steam Public...OK", "Success! App '2430930' fully installed."]):
-                    logging.info(f"Full output after sending {cmd}: {' '.join(output_lines)}")
+                    logging.info(f"Full output after sending {cmd}: {' '.join(cmd_output)}")
                     break  # Exit loop once target line and command acknowledgment is received
 
+    # Combine all output lines into a single string
+    full_output_str = '\n'.join(full_output)
+
+    # You can save the full output to a file if needed
+    with open('steamcmd_output.txt', 'w') as f:
+        f.write(full_output_str)
+
     return Response({"output": "steamcmd commands completed"})
+
 
 
 
