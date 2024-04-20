@@ -42,7 +42,8 @@ class StartArkServer(APIView):
                 logging.info(f"Sending command: {cmd.strip()}")
                 process.stdin.write(cmd)
                 process.stdin.flush()
-
+                time.sleep(1)  # Adding a 1-second delay
+                
         process.terminate()
 
     def post(self, request, *args, **kwargs):
