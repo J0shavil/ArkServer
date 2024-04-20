@@ -55,6 +55,8 @@ class StartArkServer(APIView):
                 logging.info(f"Sending command: {cmd}")
                 process.stdin.write(f"{cmd}\n")
                 process.stdin.flush()
+                time.sleep(2)  # Adding a delay to give time for command to execute and produce output
+                logging.info(f"Command {cmd} sent")
             else:
                 logging.warning(f"Failed to receive '{target_line}' output before sending {cmd} command")
                 break
