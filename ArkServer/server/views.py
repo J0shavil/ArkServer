@@ -48,6 +48,8 @@ class StartArkServer(APIView):
             process.stdin.flush()
             
             logging.info(f"Write result: {write_result}")
+            
+            time.sleep(1)  # Adding a delay to allow the command to be processed
 
     def post(self, request, *args, **kwargs):
         try:
