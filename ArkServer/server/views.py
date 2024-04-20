@@ -1,10 +1,3 @@
-import subprocess
-import logging
-import time
-import os
-
-logging.basicConfig(level=logging.INFO)
-
 from django.shortcuts import render
 from django.http import HttpResponse
 import os
@@ -13,6 +6,9 @@ import logging
 import time
 import requests
 import zipfile
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 logging.basicConfig(level=logging.INFO)
 
@@ -101,6 +97,9 @@ def run_steamcmd(request):
 
     return HttpResponse("steamcmd commands completed")
 
+
+@api_view(['POST', 'OPTIONS'])
+@csrf_exempt
 def start_server(request):
     if request.method == 'POST':
         # Call run_steamcmd function to execute the commands
