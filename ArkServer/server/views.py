@@ -53,7 +53,7 @@ class StartArkServer(APIView):
                 return f"Failed to execute {cmd} command: {target_line} not received"
 
             # Introduce a slight delay before sending the command
-            time.sleep(1)
+            time.sleep(2)
 
             logging.info(f"Sending command: {cmd}")
             process.stdin.write(f"{cmd}\n")
