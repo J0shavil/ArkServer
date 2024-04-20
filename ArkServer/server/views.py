@@ -50,12 +50,15 @@ class StartArkServer(APIView):
                 break
 
             logging.info(f"Sending command: {cmd.strip()}")
-            process.stdin.write(cmd)
-            process.stdin.flush()
 
-            # Log the result of writing to stdin
-            write_result = process.stdin.write(cmd)
-            logging.info(f"Write result: {write_result}")
+            # Write the command to stdin
+            try:
+                write_result = process.stdin.write(cmd)
+                process.stdin.flush()
+                logging.info(f"Write result: {write_result}")
+            except Exception as e:
+                logging.error(f"Error writing to stdin: {e}")
+                break
 
             if not read_output():
                 logging.warning(f"Did not receive expected output after sending command: {cmd.strip()}")
