@@ -57,10 +57,23 @@ def run_steamcmd():
         process.stdin.flush()
 
         # Read and log the entire output after sending the command
-        process_output = process.stdout.read().strip()
-        logging.info(f"Full output after sending {cmd}: {process_output}")
+        while True:
+            output_line = process.stdout.readline().strip()
+            if output_line:
+                logging.info(f"steamcmd output: {output_line}")
+                
+                if "Success! App '2430930' fully installed." in output_line:
+                    logging.info("Received target line: Success! App '2430930' fully installed.")
+                    break  # Exit loop once target line is received
+                elif "logout" in output_line:
+                    logging.info("Received target line: logout")
+                    break  # Exit loop once target line is received
+                elif "Connection" in output_line:
+                    logging.info("Received target line: Connection")
+                    break  # Exit loop once target line is received
 
     return Response({"output": "steamcmd commands completed"})
+
 
 class StartArkServer(APIView):
     def post(self, request, *args, **kwargs):
