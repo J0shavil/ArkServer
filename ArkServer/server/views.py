@@ -39,27 +39,22 @@ def run_steamcmd():
     process = subprocess.Popen([steamcmd_path], cwd=steamcmd_dir, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
     commands = [
-        ("login anonymous", "Loading Steam API...OK", 30),
-        ("app_update 2430930 validate", "Success! App '2430930' fully installed.", 600),
-        ("quit", "logout", 30),
+        ("Loading Steam API...OK", "login anonymous", 30),
+        ("Success! App '2430930' fully installed.", "app_update 2430930 validate", 600),
+        ("logout", "quit", 30),
     ]
 
-    for cmd, target_line, timeout in commands:
+    for target_line, cmd, timeout in commands:
+        logging.info(f"Waiting for: {target_line}")
+
+        if not read_output_until_line_contains(process, target_line, timeout):
+            logging.warning(f"Failed to receive '{target_line}' before sending {cmd} command")
+            return Response({"output": f"Failed to receive '{target_line}' before sending {cmd} command"}, status=status.HTTP_400_BAD_REQUEST)
+
         logging.info(f"Sending command: {cmd}")
-        
-        if cmd == "login anonymous":
-            if not read_output_until_line_contains(process, target_line, timeout):
-                logging.warning(f"Failed to receive '{target_line}' output before sending {cmd} command")
-                logging.info(f"Current output buffer: {process.stdout.read().strip()}")
-                return Response({"output": f"Failed to execute {cmd} command: {target_line} not received"}, status=status.HTTP_400_BAD_REQUEST)
         
         process.stdin.write(f"{cmd}\n")
         process.stdin.flush()
-
-        if not read_output_until_line_contains(process, target_line, timeout):
-            logging.warning(f"Failed to receive '{target_line}' output before sending {cmd} command")
-            logging.info(f"Current output buffer: {process.stdout.read().strip()}")
-            return Response({"output": f"Failed to execute {cmd} command: {target_line} not received"}, status=status.HTTP_400_BAD_REQUEST)
 
     return Response({"output": "steamcmd commands completed"})
 
@@ -68,3 +63,4 @@ class StartArkServer(APIView):
         result = run_steamcmd()
         logging.info(result)
         return result
+
