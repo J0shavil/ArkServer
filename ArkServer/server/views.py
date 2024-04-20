@@ -55,12 +55,12 @@ def run_steamcmd():
 
         logging.info(f"Sending command: {cmd}")
 
+        # Write command to stdin
         process.stdin.write(f"{cmd}\n")
         process.stdin.flush()
 
         # Read and log the entire output after sending the command
         cmd_output = []
-        cmd_sent = False
         while True:
             output_line = process.stdout.readline().strip()
             if output_line:
@@ -70,11 +70,11 @@ def run_steamcmd():
                 
                 if target_line in output_line:
                     logging.info(f"Received target line: {target_line}")
-                    cmd_sent = True
-
-                if cmd_sent and any(cmd in output_line for cmd in ["Connecting anonymously to Steam Public...OK", "Success! App '2430930' fully installed."]):
+                
+                # Check if the command output confirms the command was executed
+                if any(confirm_msg in output_line for confirm_msg in ["Connecting anonymously to Steam Public...OK", "Success! App '2430930' fully installed."]):
                     logging.info(f"Full output after sending {cmd}: {' '.join(cmd_output)}")
-                    break  # Exit loop once target line and command acknowledgment is received
+                    break  # Exit loop once command acknowledgment is received
 
     # Combine all output lines into a single string
     full_output_str = '\n'.join(full_output)
@@ -84,6 +84,7 @@ def run_steamcmd():
         f.write(full_output_str)
 
     return Response({"output": "steamcmd commands completed"})
+
 
 
 
