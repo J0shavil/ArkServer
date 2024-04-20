@@ -1,5 +1,6 @@
 import subprocess
 import logging
+import time
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -52,8 +53,9 @@ class StartArkServer(APIView):
             logging.info(f"Waiting for: {target_line}")
             if read_output_until_line_contains(target_line):
                 logging.info(f"Sending command: {cmd}")
-                stdout, stderr = process.communicate(input=f"{cmd}\n", timeout=30)
-                logging.info(f"Command {cmd} sent. stdout: {stdout}, stderr: {stderr}")
+                process.stdin.write(f"{cmd}\n")
+                process.stdin.flush()
+                time.sleep(2)  # Sleep for 2 seconds to allow time for command processing
             else:
                 logging.warning(f"Failed to receive '{target_line}' output before sending {cmd} command")
                 break
