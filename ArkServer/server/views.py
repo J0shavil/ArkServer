@@ -1,8 +1,9 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-import pexpect
+import ptyprocess
 import logging
+import time
 
 logging.basicConfig(level=logging.INFO)
 
@@ -12,17 +13,23 @@ class StartArkServer(APIView):
         steamcmd_dir = 'steamcmd'  # Update with your actual path
         steamcmd_path = f"{steamcmd_dir}/steamcmd.exe"
 
-        child = pexpect.spawn(steamcmd_path, encoding='utf-8', timeout=600)
+        process = ptyprocess.popen_spawn.PopenSpawn(
+            [steamcmd_path], 
+            cwd=steamcmd_dir, 
+            timeout=30
+        )
 
-        def send_command(cmd, prompt='Steam>'):
-            child.expect(prompt)
-            child.sendline(cmd)
+        def send_command(cmd, target_line):
+            process.expect(target_line, timeout=30)
+            logging.info(f"Received target line: {target_line}")
+            process.write(f"{cmd}\n".encode('utf-8'))
+            process.expect(target_line, timeout=30)
 
-        send_command("login anonymous")
-        send_command("app_update 2430930 validate")
-        send_command("quit")
+        send_command("login anonymous", "Loading Steam API...OK")
+        send_command("app_update 2430930 validate", "Waiting for user info...OK")
+        send_command("quit", "Success! App '2430930' fully installed.")
 
-        child.close()
+        process.close()
 
     def post(self, request, *args, **kwargs):
         try:
