@@ -74,7 +74,7 @@ def run_steamcmd():
                     time.sleep(3)
 
                 # Check if the command output confirms the command was executed
-                if any(confirm_msg in output_line for confirm_msg in ["Connecting anonymously to Steam Public...OK", "Success! App '2430930' fully installed."]):
+                if any(confirm_msg in output_line for confirm_msg in ["Waiting for user info...OK", "Success! App '2430930' fully installed."]):
                     logging.info(f"Full output after sending {cmd}: {' '.join(cmd_output)}")
                     break  # Exit loop once command acknowledgment is received
 
