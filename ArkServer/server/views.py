@@ -77,20 +77,26 @@ def run_steamcmd():
         return False
 
     commands = [
+        ("Loading Steam API...OK", 30),  # Wait for this output before sending the login command
         ("login anonymous", "Loading Steam API...OK", 30),
-        ("app_update 2430930 validate", "Success! App '2430930' fully installed.", 1200),
+        ("Waiting for user info...OK", 30), 
+        ("app_update 2430930 validate", "Waiting for user info", 1200),
+        ("quit", "Success! App '2430930' fully installed.", 1200),
     ]
 
-    for cmd, target_line, timeout in commands:
-        logging.info(f"Sending command: {cmd}")
-        process.stdin.write(f"{cmd}\n")
+    for target_line, timeout in commands:
+        if "login" in target_line:
+            time.sleep(2)  # Add a small delay before sending login command
+            
+        logging.info(f"Sending command: {target_line}")
+        process.stdin.write(f"{target_line}\n")
         process.stdin.flush()
 
         if not read_output_until_line_contains(target_line, timeout):
             logging.warning(f"Failed to receive expected output: {target_line}")
-            return f"Failed to execute command: {cmd}"
+            return f"Failed to execute command: {target_line}"
 
-        time.sleep(10)
+        time.sleep(2)  # Adding a 2-second delay before sending the next command
 
     return "steamcmd commands completed"
 
