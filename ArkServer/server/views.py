@@ -40,9 +40,11 @@ def run_steamcmd():
 
     commands = [
         ("Loading Steam API...OK", "login anonymous", 30),
-        ("Success! App '2430930' fully installed.", "app_update 2430930 validate", 600),
-        ("logout", "quit", 30),
+        ("Waiting for user info...OK", "app_update 2430930 validate", 600),
+        ("Success! App '2430930' fully installed.", "quit", 30),
     ]
+
+    #Success! App '2430930' fully installed.
 
     for target_line, cmd, timeout in commands:
         logging.info(f"Waiting for: {target_line}")
