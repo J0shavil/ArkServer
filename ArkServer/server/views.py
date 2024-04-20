@@ -52,27 +52,28 @@ def run_steamcmd():
             return Response({"output": f"Failed to receive '{target_line}' before sending {cmd} command"}, status=status.HTTP_400_BAD_REQUEST)
 
         logging.info(f"Sending command: {cmd}")
-        
+
         process.stdin.write(f"{cmd}\n")
         process.stdin.flush()
 
         # Read and log the entire output after sending the command
+        output_lines = []
         while True:
             output_line = process.stdout.readline().strip()
             if output_line:
                 logging.info(f"steamcmd output: {output_line}")
+                output_lines.append(output_line)
                 
-                if "Success! App '2430930' fully installed." in output_line:
-                    logging.info("Received target line: Success! App '2430930' fully installed.")
-                    break  # Exit loop once target line is received
-                elif "logout" in output_line:
-                    logging.info("Received target line: logout")
-                    break  # Exit loop once target line is received
-                elif "Connection" in output_line:
-                    logging.info("Received target line: Connection")
+                if target_line in output_line:
+                    logging.info(f"Received target line: {target_line}")
                     break  # Exit loop once target line is received
 
+        # Log the entire output after sending the command
+        if output_lines:
+            logging.info(f"Full output after sending {cmd}: {' '.join(output_lines)}")
+
     return Response({"output": "steamcmd commands completed"})
+
 
 
 class StartArkServer(APIView):
