@@ -14,8 +14,8 @@ class StartArkServer(APIView):
 
         child = pexpect.spawn(steamcmd_path, encoding='utf-8', timeout=600)
 
-        def send_command(cmd):
-            child.expect('Steam>')
+        def send_command(cmd, prompt='Steam>'):
+            child.expect(prompt)
             child.sendline(cmd)
 
         send_command("login anonymous")
