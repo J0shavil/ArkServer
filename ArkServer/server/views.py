@@ -2,58 +2,62 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 import subprocess
-import logging
-import os
 import time
+import logging
 
 logging.basicConfig(level=logging.INFO)
 
 class StartArkServer(APIView):
 
     def run_steamcmd(self):
-        steamcmd_dir = 'steamcmd'
-        steamcmd_path = os.path.join(steamcmd_dir, 'steamcmd.exe')
-
-        if not os.path.exists(steamcmd_path):
-            logging.error("steamcmd.exe not found")
-            return "steamcmd.exe not found"
-
-        commands = [
-            ("login anonymous", "Connecting anonymously to Steam Public...OK", 30),
-            ("app_update 2430930 validate", "Waiting for user info...OK", 600),
-            ("quit", "Success! App '2430930' fully installed.", 30),
-        ]
+        steamcmd_dir = 'steamcmd'  # Update with your actual path
+        steamcmd_path = f"{steamcmd_dir}/steamcmd.exe"
 
         process = subprocess.Popen([steamcmd_path], cwd=steamcmd_dir, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
-        def send_command(cmd, target_line, timeout):
-            logging.info(f"Sending command: {cmd}")
-            process.stdin.write(f"{cmd}\n")
-            process.stdin.flush()
-            
+        def read_output_until_line_contains(target_line, timeout=30):
             start_time = time.time()
             while True:
+                if process.poll() is not None:
+                    logging.info("steamcmd process terminated")
+                    break
+                
                 output_line = process.stdout.readline().strip()
                 if output_line:
                     logging.info(f"steamcmd output: {output_line}")
                     if target_line in output_line:
                         logging.info(f"Received target line: {target_line}")
-                        break
+                        return True
                 
                 if time.time() - start_time > timeout:
-                    logging.warning(f"Timeout reached while waiting for {target_line}")
-                    break
+                    logging.warning(f"Timeout reached while waiting for '{target_line}'")
+                    logging.info(f"Current output buffer: {process.stdout.read().strip()}")
+                    return False
 
-        for cmd, target_line, timeout in commands:
-            send_command(cmd, target_line, timeout)
+            return False
 
-        stdout, stderr = process.communicate()
-        logging.info(f"stdout: {stdout}")
-        logging.info(f"stderr: {stderr}")
+        commands = [
+            ("Loading Steam API...OK", "login anonymous\n", 30),
+            ("Waiting for user info...OK", "app_update 2430930 validate\n", 600),
+            ("Success! App '2430930' fully installed.", "quit\n", 30),
+        ]
 
-        return "steamcmd commands completed"
+        for target_line, cmd, timeout in commands:
+            logging.info(f"Waiting for: {target_line}")
+            if read_output_until_line_contains(target_line, timeout):
+                logging.info(f"Sending command: {cmd.strip()}")
+                process.stdin.write(cmd)
+                process.stdin.flush()
+            else:
+                logging.warning(f"Failed to receive '{target_line}' output before sending {cmd.strip()} command")
+                break
 
-    def post(self, request, format=None):
-        result = self.run_steamcmd()
-        logging.info(result)
-        return Response({"result": result}, status=status.HTTP_200_OK)
+        process.terminate()
+
+    def post(self, request, *args, **kwargs):
+        try:
+            self.run_steamcmd()
+            return Response({"status": "success"}, status=status.HTTP_200_OK)
+        except Exception as e:
+            logging.error(f"Error while running steamcmd: {e}")
+            return Response({"status": "error", "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
