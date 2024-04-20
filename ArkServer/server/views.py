@@ -1,7 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-import ptyprocess
 import pexpect
 import logging
 
@@ -13,15 +12,13 @@ class StartArkServer(APIView):
         steamcmd_dir = 'steamcmd'  # Update with your actual path
         steamcmd_path = f"{steamcmd_dir}/steamcmd.exe"
 
-        child = pexpect.spawn(steamcmd_path, encoding='utf-8')
+        child = pexpect.spawn(steamcmd_path, encoding='utf-8', timeout=600)
 
         def send_command(cmd):
-            child.sendline(cmd)
             child.expect('Steam>')
+            child.sendline(cmd)
 
         send_command("login anonymous")
-
-        # Continue with other commands
         send_command("app_update 2430930 validate")
         send_command("quit")
 
