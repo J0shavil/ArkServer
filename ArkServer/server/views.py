@@ -39,7 +39,7 @@ def run_steamcmd():
     process = subprocess.Popen([steamcmd_path], cwd=steamcmd_dir, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
     commands = [
-        ("Loading Steam API...OK", "login anonymous", 30),
+        ("Loading Steam API...OK", "Steam>login anonymous", 30),
         ("Waiting for user info...OK", "app_update 2430930 validate", 600),
         ("Success! App '2430930' fully installed.", "quit", 30),
     ]
