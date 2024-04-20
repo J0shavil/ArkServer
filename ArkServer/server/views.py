@@ -1,9 +1,9 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-import ptyprocess
-import logging
+import subprocess
 import time
+import logging
 
 logging.basicConfig(level=logging.INFO)
 
@@ -13,23 +13,32 @@ class StartArkServer(APIView):
         steamcmd_dir = 'steamcmd'  # Update with your actual path
         steamcmd_path = f"{steamcmd_dir}/steamcmd.exe"
 
-        process = ptyprocess.popen_spawn.PopenSpawn(
-            [steamcmd_path], 
-            cwd=steamcmd_dir, 
-            timeout=30
+        process = subprocess.Popen(
+            [steamcmd_path],
+            cwd=steamcmd_dir,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True
         )
 
         def send_command(cmd, target_line):
-            process.expect(target_line, timeout=30)
-            logging.info(f"Received target line: {target_line}")
-            process.write(f"{cmd}\n".encode('utf-8'))
-            process.expect(target_line, timeout=30)
+            process.stdin.write(f"{cmd}\n")
+            process.stdin.flush()
+
+            while True:
+                output = process.stdout.readline().strip()
+                if output:
+                    logging.info(f"steamcmd output: {output}")
+                    if target_line in output:
+                        logging.info(f"Received target line: {target_line}")
+                        break
 
         send_command("login anonymous", "Loading Steam API...OK")
-        send_command("app_update 2430930 validate", "Waiting for user info...OK")
-        send_command("quit", "Success! App '2430930' fully installed.")
+        send_command("app_update 2430930 validate", "Success! App '2430930' fully installed.")
+        send_command("quit", "")  # No specific target line after quitting
 
-        process.close()
+        process.terminate()
 
     def post(self, request, *args, **kwargs):
         try:
