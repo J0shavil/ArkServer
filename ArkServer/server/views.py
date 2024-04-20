@@ -37,22 +37,24 @@ class StartArkServer(APIView):
             return False
 
         commands = [
-            ("Loading Steam API...OK", "login anonymous", 30),
+            ("Steam>", "", 60),  # Waiting for Steam> prompt after launch
+            ("", "login anonymous", 30),
             ("Steam>", "", 30),  # Waiting for Steam> prompt after login
-            ("Waiting for user info...OK", "app_update 2430930 validate", 600),
+            ("", "app_update 2430930 validate", 600),
             ("Steam>", "", 30),  # Waiting for Steam> prompt after app_update
-            ("Success! App '2430930' fully installed.", "quit", 30),
+            ("", "quit", 30),
         ]
 
         for target_line, cmd, timeout in commands:
             logging.info(f"Waiting for: {target_line}")
-            if read_output_until_line_contains(target_line, timeout):
-                logging.info(f"Sending command: {cmd.strip()}")
-                process.stdin.write(f"{cmd}\n")
-                process.stdin.flush()
-            else:
-                logging.warning(f"Failed to receive '{target_line}' output before sending {cmd.strip()} command")
-                break
+            if target_line:
+                if not read_output_until_line_contains(target_line, timeout):
+                    logging.warning(f"Failed to receive '{target_line}' before sending {cmd.strip()} command")
+                    break
+
+            logging.info(f"Sending command: {cmd.strip()}")
+            process.stdin.write(f"{cmd}\n")
+            process.stdin.flush()
 
         process.terminate()
 
