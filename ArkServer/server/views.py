@@ -48,18 +48,22 @@ class StartArkServer(APIView):
                 logging.info(f"Sending command: {cmd.strip()}")
                 
                 # Write the command to stdin
-                write_result = process.stdin.write(cmd)
-                process.stdin.flush()
-                
-                # Log the result of writing to stdin
-                logging.info(f"Write result: {write_result}")
+            write_result = process.stdin.write(cmd)
+            process.stdin.flush()
 
-                # Read and log the output after sending the command
+            # Log the result of writing to stdin
+            logging.info(f"Write result: {write_result}")
+
+            # Read and log the output after sending the command
+            logging.info("Reading output after sending command:")
+            while True:
                 output_line = process.stdout.readline().strip()
-                logging.info(f"Received after sending command: {output_line}")
-            else:
-                logging.warning(f"Failed to receive '{target_line}' output before sending {cmd.strip()} command")
-                break
+                if output_line:
+                    logging.info(f"Received after sending command: {output_line}")
+                    if any(target in output_line for target in ["Steam>", "Connecting anonymously to Steam Public...OK", "Waiting for client config...OK", "Waiting for user info...OK"]):
+                        break
+                else:
+                    break
 
         process.terminate()
 
