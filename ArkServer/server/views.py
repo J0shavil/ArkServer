@@ -6,9 +6,9 @@ import logging
 import time
 import requests
 import zipfile
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework.decorators import api_view
+from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import status
 
 logging.basicConfig(level=logging.INFO)
 
@@ -30,7 +30,6 @@ def download_steamcmd():
                 file.write(response.content)
             logging.info("steamcmd.zip downloaded successfully.")
             
-            # Extract steamcmd.exe from the zip file
             with zipfile.ZipFile(steamcmd_zip_path, 'r') as zip_ref:
                 zip_ref.extract('steamcmd.exe', steamcmd_dir)
             
@@ -41,7 +40,7 @@ def download_steamcmd():
     
     return True
 
-def run_steamcmd(request):
+def run_steamcmd():
     steamcmd_dir = 'steamcmd'
     steamcmd_path = os.path.join(steamcmd_dir, 'steamcmd.exe')
 
@@ -49,7 +48,7 @@ def run_steamcmd(request):
         logging.error("steamcmd.exe not found. Attempting to download...")
         
         if not download_steamcmd():
-            return HttpResponse("Failed to download steamcmd.exe.")
+            return "Failed to download steamcmd.exe."
     
     logging.info("steamcmd.exe found. Starting steamcmd...")
     
@@ -58,7 +57,7 @@ def run_steamcmd(request):
     def read_output_until_line_contains(target_line, timeout):
         start_time = time.time()
         while True:
-            if process.poll() is not None:  # Check if process is terminated
+            if process.poll() is not None:
                 logging.info("steamcmd process terminated")
                 break
             
@@ -69,7 +68,7 @@ def run_steamcmd(request):
                 if target_line in output_line:
                     return True
                 
-                start_time = time.time()  # Reset timer on activity
+                start_time = time.time()
             
             if time.time() - start_time > timeout:
                 logging.warning("Timeout reached while waiting for steamcmd output")
@@ -78,13 +77,9 @@ def run_steamcmd(request):
         return False
 
     commands = [
-        ("login anonymous", "Loading Steam API...OK", 30),  # Login with 30-second timeout
-        ("app_update 2430930 validate", "Waiting for user info...OK" , 1200),  # Update with 20-minute timeout
-        ("quit", "Success! App '2430930' fully installed.", 1200),
-        # Add more commands as needed
+        ("login anonymous", "Loading Steam API...OK", 30),
+        ("app_update 2430930 validate", "Success! App '2430930' fully installed.", 1200),
     ]
-
-    # "Success! App '2430930' fully installed."
 
     for cmd, target_line, timeout in commands:
         logging.info(f"Sending command: {cmd}")
@@ -93,19 +88,18 @@ def run_steamcmd(request):
 
         if not read_output_until_line_contains(target_line, timeout):
             logging.warning(f"Failed to receive expected output: {target_line}")
-            return HttpResponse(f"Failed to execute command: {cmd}")
+            return f"Failed to execute command: {cmd}"
 
-    return HttpResponse("steamcmd commands completed")
+        time.sleep(1)
 
+    return "steamcmd commands completed"
 
-@api_view(['POST', 'OPTIONS'])
-@csrf_exempt
-def start_server(request):
-    if request.method == 'POST':
-        # Call run_steamcmd function to execute the commands
-        result = run_steamcmd(request)
-        logging.info(result)
-        return HttpResponse(result)
-    else:
-        # Render your template with the button
-        return render(request, 'your_template_name.html')
+class StartArkServer(APIView):
+    
+    def post(self, request, *args, **kwargs):
+        result = run_steamcmd()
+        
+        if "Failed" in result:
+            return Response({"output": result}, status=status.HTTP_400_BAD_REQUEST)
+        
+        return Response({"output": result}, status=status.HTTP_200_OK)
