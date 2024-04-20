@@ -101,7 +101,12 @@ def run_steamcmd():
         if cmd == "login anonymous":
             time.sleep(2)  # Adding a 2-second delay before sending the next command
 
+    # Additional logging to print the final output of steamcmd
+    final_output = process.stdout.read().strip()
+    logging.info(f"Final output from steamcmd: {final_output}")
+
     return "steamcmd commands completed"
+
 
 class StartArkServer(APIView):
     
