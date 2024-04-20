@@ -25,11 +25,18 @@ class StartArkServer(APIView):
         )
 
         def read_output():
-            for line in iter(process.stdout.readline, ''):
-                logging.info(f"steamcmd output: {line.strip()}")
-                if any(target in line for target in ["Steam>", "Connecting anonymously to Steam Public...OK", "Waiting for client config...OK", "Waiting for user info...OK"]):
+            while True:
+                line = process.stdout.readline().strip()
+                if not line:
+                    break
+                logging.info(f"steamcmd output: {line}")
+
+                if "Steam>" in line:
+                    return True
+                elif any(target in line for target in ["Loading Steam API...OK", "Waiting for user info...OK"]):
                     return True
             return False
+
 
         commands = [
             ("Loading Steam API...OK", "login anonymous\n", 30),
