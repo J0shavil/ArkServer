@@ -71,7 +71,7 @@ def run_steamcmd():
                 if target_line in output_line:
                     logging.info(f"Received target line: {target_line}")
                 
-                time.sleep(10)
+                    time.sleep(3)
 
                 # Check if the command output confirms the command was executed
                 if any(confirm_msg in output_line for confirm_msg in ["Connecting anonymously to Steam Public...OK", "Success! App '2430930' fully installed."]):
