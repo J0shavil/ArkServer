@@ -46,9 +46,14 @@ class StartArkServer(APIView):
             logging.info(f"Waiting for: {target_line}")
             if read_output_until_line_contains(target_line, timeout):
                 logging.info(f"Sending command: {cmd.strip()}")
-                process.stdin.write(cmd)
+                
+                # Write the command to stdin
+                write_result = process.stdin.write(cmd)
                 process.stdin.flush()
                 
+                # Log the result of writing to stdin
+                logging.info(f"Write result: {write_result}")
+
                 # Read and log the output after sending the command
                 output_line = process.stdout.readline().strip()
                 logging.info(f"Received after sending command: {output_line}")
