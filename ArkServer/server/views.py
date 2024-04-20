@@ -32,6 +32,7 @@ class StartArkServer(APIView):
                     logging.info(f"steamcmd output: {output}")
                     if target_line in output:
                         logging.info(f"Received target line: {target_line}")
+                        time.sleep(2)
                         break
 
         send_command("login anonymous", "Loading Steam API...OK")
