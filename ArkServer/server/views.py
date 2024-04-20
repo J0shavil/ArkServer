@@ -37,6 +37,11 @@ class StartArkServer(APIView):
             logging.info(f"SteamCMD stdout: {stdout.strip()}")
             logging.info(f"SteamCMD stderr: {stderr.strip()}")
 
+            # Read any remaining output
+            remaining_output = read_output(process)
+            for line in remaining_output:
+                logging.info(f"Remaining steamcmd output: {line}")
+
     def post(self, request, *args, **kwargs):
         try:
             self.run_steamcmd()
