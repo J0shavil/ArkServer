@@ -46,7 +46,7 @@ class StartArkServer(APIView):
             logging.info(f"Waiting for: {target_line}")
             if read_output_until_line_contains(target_line, timeout):
                 logging.info(f"Sending command: {cmd.strip()}")
-                process.stdin.write(f"{cmd}\n")
+                process.stdin.write(f"login anonymous")
                 process.stdin.flush()
                 
                 # Add a delay after sending "login anonymous"
