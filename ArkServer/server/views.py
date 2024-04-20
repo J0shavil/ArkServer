@@ -15,25 +15,18 @@ class StartArkServer(APIView):
 
         process = subprocess.Popen([steamcmd_path], cwd=steamcmd_dir, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
-        def read_output_until_line_contains(target_line, timeout=30):
+        def read_output_with_timeout(timeout=10):
             start_time = time.time()
             while True:
-                if process.poll() is not None:
-                    logging.info("steamcmd process terminated")
+                if time.time() - start_time > timeout:
+                    logging.warning("Timeout reached while waiting for response after sending command")
                     break
                 
                 output_line = process.stdout.readline().strip()
                 if output_line:
-                    logging.info(f"steamcmd output: {output_line}")
-                    if target_line in output_line:
-                        logging.info(f"Received target line: {target_line}")
+                    logging.info(f"Received after sending command: {output_line}")
+                    if any(target in output_line for target in ["Steam>", "Connecting anonymously to Steam Public...OK", "Waiting for client config...OK", "Waiting for user info...OK"]):
                         return True
-                
-                if time.time() - start_time > timeout:
-                    logging.warning(f"Timeout reached while waiting for '{target_line}'")
-                    logging.info(f"Current output buffer: {process.stdout.read().strip()}")
-                    return False
-
             return False
 
         commands = [
@@ -44,28 +37,17 @@ class StartArkServer(APIView):
 
         for target_line, cmd, timeout in commands:
             logging.info(f"Waiting for: {target_line}")
-            if read_output_until_line_contains(target_line, timeout):
-                logging.info(f"Sending command: {cmd.strip()}")
+            
+            start_time = time.time()
+            
+            if not read_output_with_timeout():
+                logging.warning("No response received after sending command")
+                break
                 
-                # Write the command to stdin
             write_result = process.stdin.write(cmd)
             process.stdin.flush()
-
-            # Log the result of writing to stdin
+            
             logging.info(f"Write result: {write_result}")
-
-            # Read and log the output after sending the command
-            logging.info("Reading output after sending command:")
-            while True:
-                output_line = process.stdout.readline().strip()
-                if output_line:
-                    logging.info(f"Received after sending command: {output_line}")
-                    if any(target in output_line for target in ["Steam>", "Connecting anonymously to Steam Public...OK", "Waiting for client config...OK", "Waiting for user info...OK"]):
-                        break
-                else:
-                    break
-
-        process.terminate()
 
     def post(self, request, *args, **kwargs):
         try:
