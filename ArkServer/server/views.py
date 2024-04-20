@@ -2,7 +2,6 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 import subprocess
-import time
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -15,20 +14,16 @@ class StartArkServer(APIView):
 
         process = subprocess.Popen([steamcmd_path], cwd=steamcmd_dir, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
-        def read_all_output(timeout=30):
-            start_time = time.time()
+        def read_output(process):
+            output = []
             while True:
-                if process.poll() is not None:
-                    logging.info("steamcmd process terminated")
+                line = process.stdout.readline().strip()
+                if line:
+                    logging.info(f"steamcmd output: {line}")
+                    output.append(line)
+                else:
                     break
-                
-                output_line = process.stdout.readline().strip()
-                if output_line:
-                    logging.info(f"steamcmd output: {output_line}")
-                
-                if time.time() - start_time > timeout:
-                    logging.warning("Timeout reached while waiting for output")
-                    break
+            return output
 
         commands = [
             "login anonymous",
@@ -38,11 +33,9 @@ class StartArkServer(APIView):
 
         for cmd in commands:
             logging.info(f"Sending command: {cmd}")
-            process.stdin.write(f"{cmd}\n")
-            process.stdin.flush()
-            read_all_output()
-
-        process.terminate()
+            stdout, stderr = process.communicate(input=f"{cmd}\n", timeout=30)
+            logging.info(f"SteamCMD stdout: {stdout.strip()}")
+            logging.info(f"SteamCMD stderr: {stderr.strip()}")
 
     def post(self, request, *args, **kwargs):
         try:
