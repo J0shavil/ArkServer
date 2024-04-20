@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 import subprocess
 import logging
+import time
 
 logging.basicConfig(level=logging.INFO)
 
@@ -12,35 +13,37 @@ class StartArkServer(APIView):
         steamcmd_dir = 'steamcmd'  # Update with your actual path
         steamcmd_path = f"{steamcmd_dir}/steamcmd.exe"
 
-        process = subprocess.Popen([steamcmd_path], cwd=steamcmd_dir, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        process = subprocess.Popen([steamcmd_path], cwd=steamcmd_dir, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, bufsize=1)
 
-        def read_output(process):
-            output = []
+        def read_output(process, target_line, timeout=30):
+            start_time = time.time()
             while True:
                 line = process.stdout.readline().strip()
                 if line:
                     logging.info(f"steamcmd output: {line}")
-                    output.append(line)
-                else:
-                    break
-            return output
+                    if target_line in line:
+                        logging.info(f"Received target line: {target_line}")
+                        return True
+                
+                if time.time() - start_time > timeout:
+                    logging.warning(f"Timeout reached while waiting for '{target_line}'")
+                    logging.info(f"Current output buffer: {process.stdout.read().strip()}")
+                    return False
 
         commands = [
-            "login anonymous",
-            "app_update 2430930 validate",
-            "quit"
+            ("Loading Steam API...OK", "login anonymous\n"),
+            ("Waiting for user info...OK", "app_update 2430930 validate\n"),
+            ("Success! App '2430930' fully installed.", "quit\n"),
         ]
 
-        for cmd in commands:
-            logging.info(f"Sending command: {cmd}")
-            stdout, stderr = process.communicate(input=f"{cmd}\n", timeout=30)
-            logging.info(f"SteamCMD stdout: {stdout.strip()}")
-            logging.info(f"SteamCMD stderr: {stderr.strip()}")
+        for target_line, cmd in commands:
+            logging.info(f"Waiting for: {target_line}")
+            if read_output(process, target_line):
+                logging.info(f"Sending command: {cmd.strip()}")
+                process.stdin.write(cmd)
+                process.stdin.flush()
 
-            # Read any remaining output
-            remaining_output = read_output(process)
-            for line in remaining_output:
-                logging.info(f"Remaining steamcmd output: {line}")
+        process.terminate()
 
     def post(self, request, *args, **kwargs):
         try:
