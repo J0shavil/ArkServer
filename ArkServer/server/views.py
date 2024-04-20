@@ -84,7 +84,7 @@ def run_steamcmd():
         logging.info(f"Sending command: {cmd}")
 
         if cmd == "login anonymous":
-            if not read_output_until_line_contains(target_line, 30):
+            if not read_output_until_line_contains(target_line, 1200):
                 logging.warning(f"Failed to receive '{target_line}' output before sending {cmd} command")
                 logging.info(f"Current output buffer: {process.stdout.read().strip()}")
                 return f"Failed to execute {cmd} command: {target_line} not received"
