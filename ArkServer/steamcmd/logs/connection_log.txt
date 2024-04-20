@@ -20,3 +20,25 @@
 [2024-04-20 16:08:36] Connectivity test: result=Connected (since 0.0s ago), prev=Unknown, in progress=0
 [2024-04-20 16:08:57] [Logged Off, 0, 0] [U:1:0] ResetVoiceRecording() (was recording: 0) (last get voice time: 1713625737 seconds ago)
 [2024-04-20 16:08:57] [Logged Off, 0, 0] [U:1:0] Log session ended
+
+
+[2024-04-20 16:55:08] Client version: 1709846822
+[2024-04-20 16:55:08] Connectivity test: Starting test, fetching 'http://test.steampowered.com/204'
+[2024-04-20 16:55:08] [Logged Off, 0, 0] [U:1:0] CCMInterface::SetSteamID( [U:1:0] )
+[2024-04-20 16:55:08] IPv6 HTTP connectivity test (ipv6check-http.steamserver.net / 0.0.0.0:80 (0.0.0.0:80)) - TIMEOUT
+[2024-04-20 16:55:08] Connectivity test: OK!
+[2024-04-20 16:55:08] Connectivity test: result=Connected (since 0.0s ago), prev=Unknown, in progress=0
+[2024-04-20 16:55:08] IPv6 UDP connectivity test (ipv6check-udp.steamserver.net) - FAILED, no addresses resolved
+[2024-04-20 16:55:42] [Logged Off, 0, 0] [U:1:0] ResetVoiceRecording() (was recording: 0) (last get voice time: 1713628542 seconds ago)
+[2024-04-20 16:55:42] [Logged Off, 0, 0] [U:1:0] Log session ended
+
+
+[2024-04-20 16:58:49] Client version: 1709846822
+[2024-04-20 16:58:49] Connectivity test: Starting test, fetching 'http://test.steampowered.com/204'
+[2024-04-20 16:58:49] [Logged Off, 0, 0] [U:1:0] CCMInterface::SetSteamID( [U:1:0] )
+[2024-04-20 16:58:49] IPv6 HTTP connectivity test (ipv6check-http.steamserver.net / 0.0.0.0:80 (0.0.0.0:80)) - TIMEOUT
+[2024-04-20 16:58:49] IPv6 UDP connectivity test (ipv6check-udp.steamserver.net) - FAILED, no addresses resolved
+[2024-04-20 16:58:49] Connectivity test: OK!
+[2024-04-20 16:58:49] Connectivity test: result=Connected (since 0.0s ago), prev=Unknown, in progress=0
+[2024-04-20 16:59:04] [Logged Off, 0, 0] [U:1:0] ResetVoiceRecording() (was recording: 0) (last get voice time: 1713628744 seconds ago)
+[2024-04-20 16:59:04] [Logged Off, 0, 0] [U:1:0] Log session ended

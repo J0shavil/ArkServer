@@ -90,7 +90,7 @@ def run_steamcmd():
             logging.warning(f"Failed to receive expected output: {target_line}")
             return f"Failed to execute command: {cmd}"
 
-        time.sleep(1)
+        time.sleep(10)
 
     return "steamcmd commands completed"
 
