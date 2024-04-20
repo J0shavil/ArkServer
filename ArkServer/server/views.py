@@ -48,6 +48,10 @@ class StartArkServer(APIView):
                 logging.info(f"Sending command: {cmd.strip()}")
                 process.stdin.write(cmd)
                 process.stdin.flush()
+                
+                # Read and log the output after sending the command
+                output_line = process.stdout.readline().strip()
+                logging.info(f"Received after sending command: {output_line}")
             else:
                 logging.warning(f"Failed to receive '{target_line}' output before sending {cmd.strip()} command")
                 break
