@@ -78,7 +78,7 @@ def run_steamcmd(request):
         return False
 
     commands = [
-        ("login anonymous", "loading steam API...OK", 30),  # Login with 30-second timeout
+        ("login anonymous", "Loading Steam API...OK", 30),  # Login with 30-second timeout
         ("app_update 2430930 validate", "Waiting for user info...OK" , 1200),  # Update with 20-minute timeout
         ("quit", "Success! App '2430930' fully installed.", 1200),
         # Add more commands as needed
