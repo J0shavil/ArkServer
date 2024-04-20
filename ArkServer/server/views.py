@@ -75,7 +75,7 @@ def run_steamcmd():
         return False
 
     commands = [
-        ("login anonymous", "Loading Steam API...OK", 30),
+        ("login anonymous", "Loading Steam API...OK", 1200),
         ("app_update 2430930 validate", "Waiting for user info", 1200),
         ("quit", "Success! App '2430930' fully installed.", 30),
     ]
