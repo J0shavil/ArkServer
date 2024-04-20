@@ -77,38 +77,28 @@ def run_steamcmd():
         return False
 
     commands = [
-        ("login anonymous", "Connecting anonymously to Steam Public...OK", 30),
+        ("login anonymous", "Loading Steam API...OK", 30),
         ("app_update 2430930 validate", "Waiting for user info", 1200),
         ("quit", "Success! App '2430930' fully installed.", 30),
     ]
 
     for cmd, target_line, timeout in commands:
+        logging.info(f"Sending command: {cmd}")
+        process.stdin.write(f"{cmd}\n")
+        process.stdin.flush()
+
+        # Special handling for login anonymous to ensure it waits for the target line
         if cmd == "login anonymous":
-            logging.info(f"Sending command: {cmd}")
-            process.stdin.write(f"{cmd}\n")
-            process.stdin.flush()
-
-            # Check for immediate output after sending the command
-            immediate_output = process.stdout.readline().strip()
-            logging.info(f"Immediate output after {cmd}: {immediate_output}")
-
             if not read_output_until_line_contains(target_line, 30):
                 logging.warning(f"Failed to receive '{target_line}' output after sending {cmd} command")
                 return f"Failed to execute {cmd} command: {target_line} not received"
             
             time.sleep(2)  # Add a small delay before sending the next command
-            
-        else:
-            logging.info(f"Sending command: {cmd}")
-            process.stdin.write(f"{cmd}\n")
-            process.stdin.flush()
 
+        else:
             if not read_output_until_line_contains(target_line, timeout):
                 logging.warning(f"Failed to receive expected output: {target_line}")
                 return f"Failed to execute command: {cmd}"
-
-        if cmd == "login anonymous":
-            time.sleep(2)  # Adding a 2-second delay before sending the next command
 
     # Additional logging to print the final output of steamcmd
     final_output = process.stdout.read().strip()
@@ -119,6 +109,7 @@ def run_steamcmd():
     logging.info(f"steamcmd process exit status: {exit_status}")
 
     return "steamcmd commands completed"
+
 
 
 
