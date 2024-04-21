@@ -44,15 +44,27 @@ class StartArkServer(APIView):
 
     def run_steamcmd(self):
         steam_cmd = os.path.join(self.STEAMCMD_PATH, "steamcmd.exe")
+        
         try:
             if not self.is_steamcmd_installed():
                 logging.error("SteamCMD is not installed")
                 print("SteamCMD is not installed. Installing...")  # Print to terminal
                 self.install_steamcmd()
                 return
+            
+            # Check if steamcmd.exe exists
+            if not os.path.exists(steam_cmd):
+                logging.error(f"steamcmd.exe not found at {steam_cmd}")
+                print(f"steamcmd.exe not found at {steam_cmd}")
+                raise Exception("steamcmd.exe not found")
 
+            # Construct the command to be executed
+            cmd = [steam_cmd, "+login", "anonymous", "+app_update", "APP_ID", "+quit"]
+            
+            print(f"Executing command: {' '.join(cmd)}")  # Print the full command
+            
             result = subprocess.run(
-                [steam_cmd, "+login", "anonymous", "+app_update", "2430930", "+quit"],
+                cmd,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True
@@ -74,6 +86,7 @@ class StartArkServer(APIView):
             logging.error(f"Error while running steamcmd: {e}")
             print(f"Error while running steamcmd: {e}")  # Print to terminal
             raise
+
 
     def post(self, request, *args, **kwargs):
         try:
