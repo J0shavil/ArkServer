@@ -63,33 +63,37 @@ class StartArkServer(APIView):
                 raise Exception("steamcmd.exe not found")
 
             # Construct the command to be executed
-            cmd = [steam_cmd, "+login", "anonymous", "+app_update", "APP_ID", "+quit"]
+            cmd = [steam_cmd, "+login", "anonymous", "+app_update", "2430930", "+quit"]
             
             print(f"Executing command: {' '.join(cmd)}")  # Print the full command
             
-            result = subprocess.run(
-                cmd,
+            # Run steamcmd.exe using Popen with shell=True
+            process = subprocess.Popen(
+                ' '.join(cmd),
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
-                text=True
+                shell=True
             )
+            
+            stdout, stderr = process.communicate()
 
-            if result.returncode == 0:
+            if process.returncode == 0:
                 logging.info("SteamCMD process completed successfully")
                 print("SteamCMD process completed successfully")  # Print to terminal
-                logging.info(result.stdout)
-                print(result.stdout)  # Print to terminal
+                logging.info(stdout.decode('utf-8'))
+                print(stdout.decode('utf-8'))  # Print to terminal
             else:
                 logging.error("SteamCMD process failed")
                 print("SteamCMD process failed")  # Print to terminal
-                logging.error(result.stderr)
-                print(result.stderr)  # Print to terminal
+                logging.error(stderr.decode('utf-8'))
+                print(stderr.decode('utf-8'))  # Print to terminal
                 raise Exception("SteamCMD process failed")
 
         except Exception as e:
             logging.error(f"Error while running steamcmd: {e}")
             print(f"Error while running steamcmd: {e}")  # Print to terminal
             raise
+
 
 
 
