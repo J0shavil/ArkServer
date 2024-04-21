@@ -52,7 +52,11 @@ class StartArkServer(APIView):
                 self.install_steamcmd()
                 return
             
-            # Check if steamcmd.exe exists
+            # Print current working directory
+            cwd = os.getcwd()
+            print(f"Current working directory: {cwd}")
+
+            # Check if steamcmd.exe exists before running
             if not os.path.exists(steam_cmd):
                 logging.error(f"steamcmd.exe not found at {steam_cmd}")
                 print(f"steamcmd.exe not found at {steam_cmd}")
@@ -86,6 +90,7 @@ class StartArkServer(APIView):
             logging.error(f"Error while running steamcmd: {e}")
             print(f"Error while running steamcmd: {e}")  # Print to terminal
             raise
+
 
 
     def post(self, request, *args, **kwargs):
