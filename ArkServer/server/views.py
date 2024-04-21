@@ -43,7 +43,7 @@ class StartArkServer(APIView):
             raise
 
     def run_steamcmd(self):
-        steam_cmd = "C:\\Users\\josh_\\OneDrive\\Documentos\\ArkServer\\ArkServer\\ArkServer\\steamcmd\\steamcmd.exe"  
+        steam_cmd = os.path.join(self.STEAMCMD_PATH, "steamcmd.exe")
         try:
             if not self.is_steamcmd_installed():
                 logging.error("SteamCMD is not installed")
