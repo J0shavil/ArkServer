@@ -1,19 +1,18 @@
 import subprocess
 import logging
+import shutil
+import requests
+import zipfile
+import os
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-import shutil
-import os
-import zipfile
-import requests
 
 logging.basicConfig(level=logging.INFO)
 
 class StartArkServer(APIView):
 
-    STEAMCMD_PATH = "steamcmd"  
-
+    STEAMCMD_PATH = "C:\\Users\\josh_\\OneDrive\\Documentos\\ArkServer\\ArkServer\\ArkServer\\steamcmd"
     STEAMCMD_URL = "https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip"
     STEAMCMD_ZIP_PATH = "steamcmd.zip"
 
@@ -44,49 +43,27 @@ class StartArkServer(APIView):
 
     def run_steamcmd(self):
         steam_cmd = os.path.join(self.STEAMCMD_PATH, "steamcmd.exe")
-        
         try:
             if not self.is_steamcmd_installed():
                 logging.error("SteamCMD is not installed")
                 print("SteamCMD is not installed. Installing...")  # Print to terminal
                 self.install_steamcmd()
-                return
-            
-            # Print current working directory
-            cwd = os.getcwd()
-            print(f"Current working directory: {cwd}")
 
-            # Check if steamcmd.exe exists before running
-            if not os.path.exists(steam_cmd):
-                logging.error(f"steamcmd.exe not found at {steam_cmd}")
-                print(f"steamcmd.exe not found at {steam_cmd}")
-                raise Exception("steamcmd.exe not found")
-
-            # Construct the command to be executed
-            cmd = [steam_cmd, "+login", "anonymous", "+app_update", "2430930", "+quit"]
-            
-            print(f"Executing command: {' '.join(cmd)}")  # Print the full command
-            
-            # Run steamcmd.exe using Popen with shell=True
-            process = subprocess.Popen(
-                ' '.join(cmd),
+            result = subprocess.run(
+                [steam_cmd, "+login", "anonymous", "+app_update", "2430930", "+quit"],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
-                shell=True
+                text=True
             )
-            
-            stdout, stderr = process.communicate()
 
-            if process.returncode == 0:
+            if result.returncode == 0:
                 logging.info("SteamCMD process completed successfully")
+                logging.info(result.stdout)
                 print("SteamCMD process completed successfully")  # Print to terminal
-                logging.info(stdout.decode('utf-8'))
-                print(stdout.decode('utf-8'))  # Print to terminal
             else:
                 logging.error("SteamCMD process failed")
+                logging.error(result.stderr)
                 print("SteamCMD process failed")  # Print to terminal
-                logging.error(stderr.decode('utf-8'))
-                print(stderr.decode('utf-8'))  # Print to terminal
                 raise Exception("SteamCMD process failed")
 
         except Exception as e:
@@ -94,14 +71,10 @@ class StartArkServer(APIView):
             print(f"Error while running steamcmd: {e}")  # Print to terminal
             raise
 
-
-
-
     def post(self, request, *args, **kwargs):
         try:
             self.run_steamcmd()
             return Response({"status": "success"}, status=status.HTTP_200_OK)
         except Exception as e:
             logging.error(f"Error while running steamcmd: {e}")
-            print(f"Error while running steamcmd: {e}")  # Print to terminal
             return Response({"status": "error", "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
