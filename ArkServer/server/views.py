@@ -52,7 +52,7 @@ class StartArkServer(APIView):
                 return
 
             result = subprocess.run(
-                [steam_cmd, "+login", "anonymous", "+app_update", "APP_ID", "+quit"],
+                [steam_cmd, "+login", "anonymous", "+app_update", "2430930", "+quit"],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True
