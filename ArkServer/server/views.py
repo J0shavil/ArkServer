@@ -12,7 +12,7 @@ logging.basicConfig(level=logging.INFO)
 
 class StartArkServer(APIView):
 
-    STEAMCMD_PATH = "C:\\Users\\josh_\\OneDrive\\Documentos\\ArkServer\\ArkServer\\ArkServer"  
+    STEAMCMD_PATH = "C:\\Users\\josh_\\OneDrive\\Documentos\\ArkServer\\ArkServer\\ArkServer\\steamcmd"  
 
     STEAMCMD_URL = "https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip"
     STEAMCMD_ZIP_PATH = "steamcmd.zip"
@@ -43,7 +43,7 @@ class StartArkServer(APIView):
             raise
 
     def run_steamcmd(self):
-        steam_cmd = "C:\\Users\\josh_\\OneDrive\\Documentos\\ArkServer\\ArkServer\\ArkServer\\steamcmd.exe"  
+        steam_cmd = "C:\\Users\\josh_\\OneDrive\\Documentos\\ArkServer\\ArkServer\\ArkServer\\steamcmd\\steamcmd.exe"  
         try:
             if not self.is_steamcmd_installed():
                 logging.error("SteamCMD is not installed")

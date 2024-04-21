@@ -1,0 +1,24 @@
+
+
+[2024-04-21 10:49:11] Client version: 1709846822
+[2024-04-21 10:49:11] RequestAppInfoUpdate: AppIDs 7
+[2024-04-21 10:49:11] Change number 0->23240011, apps: 0/0, packages: 0/0
+[2024-04-21 10:49:12] Requesting 1 apps, 1 packages (meta data, 1024 prev attempts, expected 0 KB)
+[2024-04-21 10:49:12] Downloaded 1 apps via HTTP, 13 KB (3 KB compressed)
+[2024-04-21 10:49:12] Requesting 0 apps, 1 packages (full data, 1024 prev attempts, expected 29 KB)
+[2024-04-21 10:49:12] UpdatesJob: finished OK, apps updated 1 (13 KB), packages updated 1 (29 KB)
+[2024-04-21 10:49:12] Requesting 1178 apps, 0 packages (meta data, 1024 prev attempts, expected 55 KB)
+[2024-04-21 10:49:13] Requested 132 app access tokens, 53 received, 79 denied
+[2024-04-21 10:49:13] Updated SHAs with 53 new access tokens
+[2024-04-21 10:49:15] Downloaded 197 apps via HTTP, 4870 KB (1292 KB compressed)
+[2024-04-21 10:49:15] Requesting 981 apps, 0 packages (full data, 1024 prev attempts, expected 3126 KB)
+[2024-04-21 10:49:16] UpdatesJob: finished OK, apps updated 1178 (7950 KB), packages updated 0 (0 KB)
+[2024-04-21 10:49:16] Starting async write C:\Users\josh_\OneDrive\Documentos\ArkServer\ArkServer\ArkServer/appcache/appinfo.vdf (5595 KB)
+
+
+[2024-04-21 10:50:12] Client version: 1709846822
+[2024-04-21 10:50:12] RequestAppInfoUpdate: AppIDs 7
+[2024-04-21 10:50:12] Change number 23240011->23240014, apps: 0/3, packages: 0/0
+[2024-04-21 10:50:12] Requesting 80 apps, 0 packages (meta data, 1024 prev attempts, expected 3 KB)
+[2024-04-21 10:50:13] Requested 79 app access tokens, 0 received, 79 denied
+[2024-04-21 10:50:13] UpdatesJob: finished OK, apps updated 0 (0 KB), packages updated 0 (0 KB)

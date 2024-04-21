@@ -1,0 +1,15 @@
+
+
+[2024-04-21 10:49:09] Client version: 1709846822
+[2024-04-21 10:49:09] Load failed: C:\Users\josh_\OneDrive\Documentos\ArkServer\ArkServer\ArkServer\steamapps\libraryfolders.vdf.
+[2024-04-21 10:49:09] Load failed: C:\Users\josh_\OneDrive\Documentos\ArkServer\ArkServer\ArkServer\config\libraryfolders.vdf.
+[2024-04-21 10:49:09] Steam library folders configuration will be reset.
+[2024-04-21 10:49:09] No install folder configuration files found.
+[2024-04-21 10:49:11] Loaded 0 apps from install folder "C:\Users\josh_\OneDrive\Documentos\ArkServer\ArkServer\ArkServer\steamapps\appmanifest_*.acf".
+[2024-04-21 10:49:11] Triggered async write of Steam library folders configuration (1 libraries).
+
+
+[2024-04-21 10:50:10] Client version: 1709846822
+[2024-04-21 10:50:10] Loaded Steam library folders configuration: C:\Users\josh_\OneDrive\Documentos\ArkServer\ArkServer\ArkServer\steamapps\libraryfolders.vdf
+[2024-04-21 10:50:12] Loaded 0 apps from install folder "C:\Users\josh_\OneDrive\Documentos\ArkServer\ArkServer\ArkServer\steamapps\appmanifest_*.acf".
+[2024-04-21 10:50:12] Triggered async write of Steam library folders configuration (1 libraries).
