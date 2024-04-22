@@ -113,6 +113,9 @@ def createserverstartup_bat(request):
 
         with open (file_path, "w", encoding="utf-8") as file:
             file.write(bat_content)
+        
+        print(server_name)
+        print(password)
 
         return JsonResponse({'message': 'Bat file created successfully!'})
     return JsonResponse({'message': 'Invalid method!'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
