@@ -68,7 +68,7 @@ class StartArkServer(APIView):
             process.wait()
 
             # Check the last line of the output for success
-            if "Update complete, launching..." in line:
+            if "Update complete, launching..." or "AtualizaÃ§Ã£o concluÃ­da, a iniciar Steam..." in line:
                 logging.info("Ark Server update completed successfully")
                 print("Ark Server update completed successfully")  # Print to terminal
             else:
