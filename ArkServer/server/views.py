@@ -49,27 +49,37 @@ class StartArkServer(APIView):
                 print("SteamCMD is not installed. Installing...")  # Print to terminal
                 self.install_steamcmd()
 
-            result = subprocess.run(
-                [steam_cmd, "+login", "anonymous", "+app_update", "2430930", "+quit"],
+            logging.info("Updating Ark Server...")
+            
+            # Start the steamcmd process
+            process = subprocess.Popen(
+                [steam_cmd, "+login", "anonymous", "+app_update", "APP_ID", "+quit"],
                 stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
+                stderr=subprocess.STDOUT,  # Redirect stderr to stdout
                 text=True
             )
+            
+            # Read and log output line by line
+            for line in iter(process.stdout.readline, ''):
+                logging.info(line.strip())
+                print(line.strip())  # Print to terminal
+            
+            process.stdout.close()
+            process.wait()
 
-            if result.returncode == 0:
-                logging.info("SteamCMD process completed successfully")
-                logging.info(result.stdout)
-                print("SteamCMD process completed successfully")  # Print to terminal
+            if process.returncode == 0:
+                logging.info("Ark Server update completed successfully")
+                print("Ark Server update completed successfully")  # Print to terminal
             else:
-                logging.error("SteamCMD process failed")
-                logging.error(result.stderr)
-                print("SteamCMD process failed")  # Print to terminal
-                raise Exception("SteamCMD process failed")
+                logging.error("Ark Server update failed")
+                print("Ark Server update failed")  # Print to terminal
+                raise Exception("Ark Server update failed")
 
         except Exception as e:
-            logging.error(f"Error while running steamcmd: {e}")
-            print(f"Error while running steamcmd: {e}")  # Print to terminal
+            logging.error(f"Error while updating Ark Server: {e}")
+            print(f"Error while updating Ark Server: {e}")  # Print to terminal
             raise
+
 
     def post(self, request, *args, **kwargs):
         try:
