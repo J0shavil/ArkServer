@@ -53,7 +53,7 @@ class StartArkServer(APIView):
             
             # Start the steamcmd process
             process = subprocess.Popen(
-                [steam_cmd, "+login", "anonymous", "+app_update", "APP_ID", "+quit"],
+                [steam_cmd, "+login", "anonymous", "+app_update", "2430930", "+quit"],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,  # Redirect stderr to stdout
                 text=True
