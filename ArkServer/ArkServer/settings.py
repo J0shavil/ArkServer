@@ -59,6 +59,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
 ]
 
+CORS_ALLOW_CREDENTIALS = True
 CSRF_COOKIE_SECURE = False  # Set to True for HTTPS
 CSRF_COOKIE_SAMESITE = 'None'
 
