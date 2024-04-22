@@ -53,7 +53,7 @@ class StartArkServer(APIView):
             
             # Start the steamcmd process
             process = subprocess.Popen(
-                [steam_cmd, "+login", "anonymous", "+app_update", "2430930", "+quit"],
+                [steam_cmd, "+login", "anonymous", "+app_update", "APP_ID", "+quit"],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,  # Redirect stderr to stdout
                 text=True
@@ -67,7 +67,8 @@ class StartArkServer(APIView):
             process.stdout.close()
             process.wait()
 
-            if process.returncode == 0:
+            # Check the last line of the output for success
+            if "Update complete, launching..." in line:
                 logging.info("Ark Server update completed successfully")
                 print("Ark Server update completed successfully")  # Print to terminal
             else:
@@ -79,6 +80,7 @@ class StartArkServer(APIView):
             logging.error(f"Error while updating Ark Server: {e}")
             print(f"Error while updating Ark Server: {e}")  # Print to terminal
             raise
+
 
 
     def post(self, request, *args, **kwargs):
