@@ -8,6 +8,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 logging.basicConfig(level=logging.INFO)
 
@@ -92,7 +93,7 @@ class StartArkServer(APIView):
             logging.error(f"Error while running steamcmd: {e}")
             return Response({"status": "error", "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
-    
+@csrf_exempt    
 def createserverstartup_bat(request):
     if request.method == "POST":
         server_name = request.POST.get("Server name")
