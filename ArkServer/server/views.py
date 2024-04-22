@@ -95,22 +95,23 @@ class StartArkServer(APIView):
     
 def createserverstartup_bat(request):
     if request.method == "POST":
-        server_name = request.GET.get("Server name")
-        password = request.GET.get("Password")
-        map = request.GET.get("Map")
-        admin_password = request.GET.get("Admin Password")
-        max_players = request.GET.get("Max Players")
+        server_name = request.POST.get("Server name")
+        password = request.POST.get("Password")
+        map = request.POST.get("Map")
+        admin_password = request.POST.get("Admin Password")
+        max_players = request.POST.get("Max Players")
 
-    bat_content = f"""
-    @echo off
-    start ArkAscendedServer.exe {map}?SessionName={server_name}?ServerPassword={password}?AltSaveDirectoryName=TheIsland?MaxPlayers={max_players}?ServerAdminPassword={admin_password} -server -log -QueryPort=27015 -Port=7777
-    """
+        bat_content = f"""
+        @echo off
+        start ArkAscendedServer.exe {map}?SessionName={server_name}?ServerPassword={password}?AltSaveDirectoryName=TheIsland?MaxPlayers={max_players}?ServerAdminPassword={admin_password} -server -log -QueryPort=27015 -Port=7777
+        """
 
-    directory = "C:\\Users\\josh_\\OneDrive\\Documentos\\ArkServer\\ArkServer\\ArkServer\\steamcmd\\steamapps\\common\\ARK Survival Ascended Dedicated Server\\ShooterGame\\binaries\Win64"
-    
-    file_path = os.path.join(directory, f"StartServer.bat")
+        directory = "C:\\Users\\josh_\\OneDrive\\Documentos\\ArkServer\\ArkServer\\ArkServer\\steamcmd\\steamapps\\common\\ARK Survival Ascended Dedicated Server\\ShooterGame\\binaries\Win64"
+        
+        file_path = os.path.join(directory, f"StartServer.bat")
 
-    with open (file_path, "w", encoding="utf-8") as file:
-        file.write(bat_content)
+        with open (file_path, "w", encoding="utf-8") as file:
+            file.write(bat_content)
 
-    return JsonResponse({'message': 'Bat file created successfully!'})
+        return JsonResponse({'message': 'Bat file created successfully!'})
+    return JsonResponse({'message': 'Invalid method!'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
