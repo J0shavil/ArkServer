@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+import json
 
 logging.basicConfig(level=logging.INFO)
 
@@ -96,12 +97,17 @@ class StartArkServer(APIView):
 @csrf_exempt    
 def createserverstartup_bat(request):
     if request.method == "POST":
-        data = request.POST.get
-        server_name = data["Server name"]
-        password = request.POST.get("Password")
-        map = request.POST.get("Map")
-        admin_password = request.POST.get("Admin Password")
-        max_players = request.POST.get("Max Players")
+
+        data_unicode = request.body.decode('uft-8')
+
+        data = json.loads(data_unicode)
+
+        server_name = data.get("Server name")
+        password = data.get("Password")
+        map_name = data.get("Map")
+        admin_password = data.get("Admin Password")
+        max_players = data.get("Max Players")
+        
 
         bat_content = f"""
         @echo off
