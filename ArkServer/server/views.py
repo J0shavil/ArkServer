@@ -96,9 +96,8 @@ class StartArkServer(APIView):
         
 #@csrf_exempt    
 def createserverstartup_bat(request):
+    print(request.headers)
     if request.method == "POST":
-
-        print(request.headers)
 
         data_unicode = request.body.decode('utf-8')
 
