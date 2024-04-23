@@ -145,6 +145,12 @@ def file_exists(file_path):
     return os.path.exists(file_path)
 
 
+from django.http import JsonResponse
+
+@csrf_exempt
 def get_csrf_token(request):
     csrf_token = get_token(request)
-    return JsonResponse({'csrfToken': csrf_token})
+    response = JsonResponse({'csrfToken': csrf_token})
+    response["Access-Control-Allow-Origin"] = "http://localhost:3000"
+    response["Access-Control-Allow-Credentials"] = "true"
+    return response
