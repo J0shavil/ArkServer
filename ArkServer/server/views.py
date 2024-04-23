@@ -143,7 +143,7 @@ def runserver_bat(request):
 def file_exists(file_path):
     return os.path.exists(file_path)
 
-
+@csrf_exempt
 def get_csrf_token(request):
     csrf_token = get_token(request)
     return JsonResponse({'csrfToken': csrf_token})
