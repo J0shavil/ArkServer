@@ -10,6 +10,9 @@ from rest_framework import status
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
+from django.middleware.csrf import get_token
+
+
 
 logging.basicConfig(level=logging.INFO)
 
@@ -139,3 +142,8 @@ def runserver_bat(request):
 
 def file_exists(file_path):
     return os.path.exists(file_path)
+
+
+def get_csrf_token(request):
+    csrf_token = get_token(request)
+    return JsonResponse({'csrfToken': csrf_token})
