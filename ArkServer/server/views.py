@@ -94,7 +94,7 @@ class StartArkServer(APIView):
             logging.error(f"Error while running steamcmd: {e}")
             return Response({"status": "error", "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
-@csrf_exempt    
+#@csrf_exempt    
 def createserverstartup_bat(request):
     if request.method == "POST":
 
