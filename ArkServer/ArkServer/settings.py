@@ -45,7 +45,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',  # Ensure this is before CsrfViewMiddleware
+    #'corsheaders.middleware.CorsMiddleware',  # Ensure this is before CsrfViewMiddleware
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',  # Ensure this is after CorsMiddleware
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -56,19 +56,12 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'ArkServer.urls'
 
-CSRF_COOKIE_NAME = 'csrftoken'
-
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    # Add any other origins as needed
-]
 
 
-CORS_ALLOW_CREDENTIALS = True
-CSRF_COOKIE_SECURE = True
-CSRF_COOKIE_SAMESITE = 'None'
-CSRF_COOKIE_HTTPONLY = False
+#CORS_ALLOW_CREDENTIALS = True
+#CSRF_COOKIE_SECURE = True
+#CSRF_COOKIE_SAMESITE = 'None'
+#CSRF_COOKIE_HTTPONLY = False
 
 
 
