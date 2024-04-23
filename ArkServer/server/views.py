@@ -101,7 +101,7 @@ class StartArkServer(APIView):
 @csrf_exempt  
 def createserverstartup_bat(request):
 
-    response = JsonResponse()
+    response = JsonResponse({'message': 'Default message'})
     response["Access-Control-Allow-Origin"] = "http://localhost:3000"
     response["Access-Control-Allow-Credentials"] = "true"
     if request.method == "OPTIONS":
