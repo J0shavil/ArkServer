@@ -96,7 +96,8 @@ class StartArkServer(APIView):
 @csrf_exempt    
 def createserverstartup_bat(request):
     if request.method == "POST":
-        server_name = request.POST.get("Server name")
+        data = request.POST.get
+        server_name = data["Server name"]
         password = request.POST.get("Password")
         map = request.POST.get("Map")
         admin_password = request.POST.get("Admin Password")
