@@ -98,7 +98,7 @@ class StartArkServer(APIView):
 def createserverstartup_bat(request):
     if request.method == "POST":
 
-        data_unicode = request.body.decode('uft-8')
+        data_unicode = request.body.decode('utf-8')
 
         data = json.loads(data_unicode)
 
