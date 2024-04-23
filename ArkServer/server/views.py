@@ -111,7 +111,7 @@ def createserverstartup_bat(request):
 
         bat_content = f"""
         @echo off
-        start ArkAscendedServer.exe {map}?SessionName={server_name}?ServerPassword={password}?AltSaveDirectoryName=TheIsland?MaxPlayers={max_players}?ServerAdminPassword={admin_password} -server -log -QueryPort=27015 -Port=7777
+        start ArkAscendedServer.exe {map_name}?SessionName={server_name}?ServerPassword={password}?AltSaveDirectoryName=TheIsland?MaxPlayers={max_players}?ServerAdminPassword={admin_password} -server -log -QueryPort=27015 -Port=7777
         """
 
         directory = "C:\\Users\\josh_\\OneDrive\\Documentos\\ArkServer\\ArkServer\\ArkServer\\steamcmd\\steamapps\\common\\ARK Survival Ascended Dedicated Server\\ShooterGame\\binaries\Win64"
