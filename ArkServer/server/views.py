@@ -105,6 +105,10 @@ def createserverstartup_bat(request):
     response = JsonResponse()
     response["Access-Control-Allow-Origin"] = "http://localhost:3000"
     response["Access-Control-Allow-Credentials"] = "true"
+    if request.method == "OPTIONS":
+        response["Access-Control-Allow-Methods"] = "POST, OPTIONS"
+        response["Access-Control-Allow-Headers"] = "Content-Type, X-CSRFToken"
+        return response
 
     print(request.headers)
     if request.method == "POST":
