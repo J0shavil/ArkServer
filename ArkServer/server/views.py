@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from corsheaders.decorators import cors_headers
+from django.views.decorators.http import require_POST
 import json
 from django.middleware.csrf import get_token
 
@@ -17,8 +17,6 @@ from django.middleware.csrf import get_token
 
 logging.basicConfig(level=logging.INFO)
 
-@csrf_exempt
-@cors_headers()
 class StartArkServer(APIView):
 
     STEAMCMD_PATH = r"C:\\Users\\josh_\\OneDrive\\Documentos\\ArkServer\\ArkServer\\ArkServer\\steamcmd"
@@ -100,8 +98,7 @@ class StartArkServer(APIView):
             logging.error(f"Error while running steamcmd: {e}")
             return Response({"status": "error", "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
-@csrf_exempt
-@cors_headers()    
+@csrf_exempt   
 def createserverstartup_bat(request):
     print(request.headers)
     if request.method == "POST":
@@ -147,7 +144,7 @@ def runserver_bat(request):
 def file_exists(file_path):
     return os.path.exists(file_path)
 
-@csrf_exempt
+
 def get_csrf_token(request):
     csrf_token = get_token(request)
     return JsonResponse({'csrfToken': csrf_token})
