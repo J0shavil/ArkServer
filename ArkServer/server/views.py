@@ -101,6 +101,11 @@ class StartArkServer(APIView):
 @csrf_exempt
 @require_POST   
 def createserverstartup_bat(request):
+
+    response = JsonResponse()
+    response["Access-Control-Allow-Origin"] = "http://localhost:3000"
+    response["Access-Control-Allow-Credentials"] = "true"
+
     print(request.headers)
     if request.method == "POST":
 
