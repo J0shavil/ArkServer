@@ -15,8 +15,8 @@ logging.basicConfig(level=logging.INFO)
 
 class StartArkServer(APIView):
 
-    STEAMCMD_PATH = "C:\\Users\\josh_\\OneDrive\\Documentos\\ArkServer\\ArkServer\\ArkServer\\steamcmd"
-    STEAMCMD_URL = "https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip"
+    STEAMCMD_PATH = r"C:\\Users\\josh_\\OneDrive\\Documentos\\ArkServer\\ArkServer\\ArkServer\\steamcmd"
+    STEAMCMD_URL = r"https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip"
     STEAMCMD_ZIP_PATH = "steamcmd.zip"
 
     def is_steamcmd_installed(self):
@@ -107,7 +107,13 @@ def createserverstartup_bat(request):
         map_name = data.get("Map")
         admin_password = data.get("Admin Password")
         max_players = data.get("Max Players")
+
+        directory = r"C:\\Users\\josh_\\OneDrive\\Documentos\\ArkServer\\ArkServer\\ArkServer\\steamcmd\\steamapps\\common\\ARK Survival Ascended Dedicated Server\\ShooterGame\\binaries\Win64"
         
+        check_filepath = f"C:\\Users\\josh_\\OneDrive\\Documentos\\ArkServer\\ArkServer\\ArkServer\\steamcmd\\steamapps\\common\\ARK Survival Ascended Dedicated Server\\ShooterGame\\binaries\\Win64\\{server_name}.bat"
+
+        if file_exists(check_filepath):
+            return JsonResponse({'message': 'A server with that name already exists.'})
 
         bat_content = f"""
         @echo off
@@ -116,7 +122,7 @@ def createserverstartup_bat(request):
 
         directory = "C:\\Users\\josh_\\OneDrive\\Documentos\\ArkServer\\ArkServer\\ArkServer\\steamcmd\\steamapps\\common\\ARK Survival Ascended Dedicated Server\\ShooterGame\\binaries\Win64"
         
-        file_path = os.path.join(directory, f"StartServer.bat")
+        file_path = os.path.join(directory, f"{server_name}.bat")
 
         with open (file_path, "w", encoding="utf-8") as file:
             file.write(bat_content)
@@ -126,3 +132,9 @@ def createserverstartup_bat(request):
 
         return JsonResponse({'message': 'Bat file created successfully!'})
     return JsonResponse({'message': 'Invalid method!'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+def runserver_bat(request):
+    pass
+
+def file_exists(file_path):
+    return os.path.exists(file_path)
