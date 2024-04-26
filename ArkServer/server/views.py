@@ -14,6 +14,7 @@ import json
 from django.middleware.csrf import get_token
 from rest_framework import status
 import bcrypt
+from .models import Server
 
 
 logging.basicConfig(level=logging.INFO)
@@ -98,7 +99,17 @@ class StartArkServer(APIView):
         except Exception as e:
             logging.error(f"Error while running steamcmd: {e}")
             return Response({"status": "error", "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
+
+
+
+
+def password_hash(password):
+    salt = bcrypt.gensalt()
+
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
+
+    return hashed_password, salt
+    
 @csrf_exempt  
 def createserverstartup_bat(request):
 
@@ -130,11 +141,23 @@ def createserverstartup_bat(request):
         if file_exists(check_filepath):
             return JsonResponse({'message': 'A server with that name already exists.'})
 
+        hashed_password, salt = password_hash(password)
 
+        hashed_admin_password, salt_admin = password_hash(admin_password)
+
+        Server.objects.create(
+            server_session_name=server_name, 
+            server_password_hash = hashed_password.decode('utf-8'),
+            server_password_salt = salt.decode('utf-8'),
+            admin_password_hash = hashed_admin_password.decode('utf-8'),
+            admin_password_salt = salt_admin.decode('utf-8')
+            max_server_players = max_players,
+            map_name = map_name,
+            )
 
         bat_content = f"""
         @echo off
-        start ArkAscendedServer.exe {map_name}?SessionName={server_name}?ServerPassword={password}?AltSaveDirectoryName=TheIsland?MaxPlayers={max_players}?ServerAdminPassword={admin_password} -server -log -QueryPort=27015 -Port=7777
+        start ArkAscendedServer.exe {map_name}?SessionName={server_name}?ServerPassword={hashed_password}?AltSaveDirectoryName=TheIsland?MaxPlayers={max_players}?ServerAdminPassword={hashed_admin_password} -server -log -QueryPort=27015 -Port=7777
         """
 
         directory = "C:\\Users\\josh_\\OneDrive\\Documentos\\ArkServer\\ArkServer\\ArkServer\\steamcmd\\steamapps\\common\\ARK Survival Ascended Dedicated Server\\ShooterGame\\binaries\Win64"
@@ -170,15 +193,5 @@ def get_csrf_token(request):
     response["Access-Control-Allow-Origin"] = "http://localhost:3000"
     response["Access-Control-Allow-Credentials"] = "true"
     return response
-
-def password_hash(password):
-    salt = bcrypt.gensalt()
-
-    hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
-
-    return hashed_password
-
-
-
 
 
