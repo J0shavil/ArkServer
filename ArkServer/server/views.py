@@ -195,3 +195,5 @@ def get_csrf_token(request):
     return response
 
 
+def get_server(request):
+    pass
