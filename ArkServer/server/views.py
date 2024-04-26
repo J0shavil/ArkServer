@@ -13,6 +13,7 @@ from django.views.decorators.http import require_POST
 import json
 from django.middleware.csrf import get_token
 from rest_framework import status
+import bcrypt
 
 
 logging.basicConfig(level=logging.INFO)
@@ -129,6 +130,8 @@ def createserverstartup_bat(request):
         if file_exists(check_filepath):
             return JsonResponse({'message': 'A server with that name already exists.'})
 
+
+
         bat_content = f"""
         @echo off
         start ArkAscendedServer.exe {map_name}?SessionName={server_name}?ServerPassword={password}?AltSaveDirectoryName=TheIsland?MaxPlayers={max_players}?ServerAdminPassword={admin_password} -server -log -QueryPort=27015 -Port=7777
@@ -148,7 +151,11 @@ def createserverstartup_bat(request):
     return JsonResponse({'message': 'Invalid method!'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 def runserver_bat(request):
-    pass
+    try:
+        subprocess.run("C:\\Users\\josh_\\OneDrive\\Documentos\\ArkServer\\ArkServer\\ArkServer\\steamcmd\\steamapps\\common\\ARK Survival Ascended Dedicated Server\\ShooterGame\\binaries\Win64", shell=True, check=True)
+        print("Bat file started successfully!")
+    except subprocess.CalledProcessError as e:
+        print(f"Error executing bat file: {e}")
 
 def file_exists(file_path):
     return os.path.exists(file_path)
@@ -163,3 +170,15 @@ def get_csrf_token(request):
     response["Access-Control-Allow-Origin"] = "http://localhost:3000"
     response["Access-Control-Allow-Credentials"] = "true"
     return response
+
+def password_hash(password):
+    salt = bcrypt.gensalt()
+
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
+
+    return hashed_password
+
+
+
+
+
