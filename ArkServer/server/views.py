@@ -150,7 +150,7 @@ def createserverstartup_bat(request):
             server_password_hash = hashed_password.decode('utf-8'),
             server_password_salt = salt.decode('utf-8'),
             admin_password_hash = hashed_admin_password.decode('utf-8'),
-            admin_password_salt = salt_admin.decode('utf-8')
+            admin_password_salt = salt_admin.decode('utf-8'),
             max_server_players = max_players,
             map_name = map_name,
             )
@@ -160,7 +160,7 @@ def createserverstartup_bat(request):
         start ArkAscendedServer.exe {map_name}?SessionName={server_name}?ServerPassword={hashed_password}?AltSaveDirectoryName=TheIsland?MaxPlayers={max_players}?ServerAdminPassword={hashed_admin_password} -server -log -QueryPort=27015 -Port=7777
         """
 
-        directory = "C:\\Users\\josh_\\OneDrive\\Documentos\\ArkServer\\ArkServer\\ArkServer\\steamcmd\\steamapps\\common\\ARK Survival Ascended Dedicated Server\\ShooterGame\\binaries\Win64"
+        directory = r"C:\\Users\\josh_\\OneDrive\\Documentos\\ArkServer\\ArkServer\\ArkServer\\steamcmd\\steamapps\\common\\ARK Survival Ascended Dedicated Server\\ShooterGame\\binaries\Win64"
         
         file_path = os.path.join(directory, f"{server_name}.bat")
 
@@ -175,7 +175,7 @@ def createserverstartup_bat(request):
 
 def runserver_bat(request):
     try:
-        subprocess.run("C:\\Users\\josh_\\OneDrive\\Documentos\\ArkServer\\ArkServer\\ArkServer\\steamcmd\\steamapps\\common\\ARK Survival Ascended Dedicated Server\\ShooterGame\\binaries\Win64", shell=True, check=True)
+        subprocess.run(r"C:\\Users\\josh_\\OneDrive\\Documentos\\ArkServer\\ArkServer\\ArkServer\\steamcmd\\steamapps\\common\\ARK Survival Ascended Dedicated Server\\ShooterGame\\binaries\Win64", shell=True, check=True)
         print("Bat file started successfully!")
     except subprocess.CalledProcessError as e:
         print(f"Error executing bat file: {e}")
