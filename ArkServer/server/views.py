@@ -15,6 +15,9 @@ from django.middleware.csrf import get_token
 from rest_framework import status
 import bcrypt
 from .models import Server
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import UserCreationForm
 
 
 logging.basicConfig(level=logging.INFO)
@@ -194,6 +197,20 @@ def get_csrf_token(request):
     response["Access-Control-Allow-Credentials"] = "true"
     return response
 
+
+
+def login(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('home')
+        else:
+            return render(request, '/', {'error_message' : 'Invalid username or passsword.'})
+    else:
+        return render(request, 'login.html')
 
 def get_server(request):
     pass
