@@ -215,6 +215,14 @@ def login(request):
 
 @csrf_exempt
 def register(request):
+    response = JsonResponse({'message': 'Default message'})
+    response["Access-Control-Allow-Origin"] = "http://localhost:3000"
+    response["Access-Control-Allow-Credentials"] = "true"
+    if request.method == "OPTIONS":
+        response["Access-Control-Allow-Methods"] = "POST, OPTIONS"
+        response["Access-Control-Allow-Headers"] = "Content-Type, X-CSRFToken"
+        return response
+    
     if request.method == 'POST':
         data = json.loads(request.body)
         username = data.get('username')
