@@ -230,7 +230,6 @@ def register(request):
         user = User.objects.create_user(username=username, password=password)
         
         # Authenticate and login the user
-        login(request, user)
         
         return JsonResponse({'message': 'User registered successfully.'})
     else:
