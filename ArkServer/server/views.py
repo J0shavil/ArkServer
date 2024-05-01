@@ -210,8 +210,10 @@ def login(request):
         response["Access-Control-Allow-Headers"] = "Content-Type, X-CSRFToken"
         return response
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
+        data = json.loads(request.body)
+        print(data)
+        username = data.get('username')
+        password = data.get('password')
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
