@@ -218,6 +218,7 @@ def register(request):
     response = JsonResponse({'message': 'Default message'})
     response["Access-Control-Allow-Origin"] = "http://localhost:3000"
     response["Access-Control-Allow-Credentials"] = "true"
+
     if request.method == "OPTIONS":
         response["Access-Control-Allow-Methods"] = "POST, OPTIONS"
         response["Access-Control-Allow-Headers"] = "Content-Type, X-CSRFToken"
@@ -225,6 +226,7 @@ def register(request):
     
     if request.method == 'POST':
         data = json.loads(request.body)
+        print(data)
         username = data.get('username')
         password = data.get('password')
 
@@ -232,11 +234,14 @@ def register(request):
         print(password)
         
         if not username or not password:
+            print("NOT USERNAME AND NOT PASS")
             return JsonResponse({'error': 'Username and password are required.'}, status=400)
         
         if User.objects.filter(username=username).exists():
+            print("USER EXISTS")
             return JsonResponse({'error': 'Username is already taken.'}, status=400)
         
+        print("USER CREATED")
         # Create a new user
         user = User.objects.create_user(username=username, password=password)
         
