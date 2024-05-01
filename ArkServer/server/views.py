@@ -219,6 +219,9 @@ def register(request):
         data = json.loads(request.body)
         username = data.get('username')
         password = data.get('password')
+
+        print(username)
+        print(password)
         
         if not username or not password:
             return JsonResponse({'error': 'Username and password are required.'}, status=400)
