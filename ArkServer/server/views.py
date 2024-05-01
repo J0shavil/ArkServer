@@ -213,7 +213,7 @@ def login(request):
     else:
         return render(request, 'login.html')
 
-
+@csrf_exempt
 def register(request):
     if request.method == 'POST':
         data = json.loads(request.body)
