@@ -201,27 +201,18 @@ def get_csrf_token(request):
 
 @csrf_exempt
 def login(request):
-    response = JsonResponse({'message': 'Default message'})
-    response["Access-Control-Allow-Origin"] = "http://localhost:3000"
-    response["Access-Control-Allow-Credentials"] = "true"
-
-    if request.method == "OPTIONS":
-        response["Access-Control-Allow-Methods"] = "POST, OPTIONS"
-        response["Access-Control-Allow-Headers"] = "Content-Type, X-CSRFToken"
-        return response
     if request.method == 'POST':
         data = json.loads(request.body)
-        print(data)
         username = data.get('username')
         password = data.get('password')
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('https://localhost:3000/')
+            return JsonResponse({'message': 'Login successful'})
         else:
-            return render(request, '/', {'error_message' : 'Invalid username or passsword.'})
+            return JsonResponse({'error': 'Invalid username or password'}, status=400)
     else:
-        return render(request, 'login.html')
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
 
 @csrf_exempt
 def register(request):
