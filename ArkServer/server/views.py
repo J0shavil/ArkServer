@@ -218,7 +218,7 @@ def custom_login(request):
         except json.JSONDecodeError as e:
             print("Error decoding JSON:", e)
         data = json.loads(request.body)
-        print(data)
+        print("DATAAAAAA", data)
         username = data.get('username')
         password = data.get('password')
         user = authenticate(request, username=username, password=password)
@@ -249,7 +249,7 @@ def register(request):
     
     if request.method == 'POST':
         data = json.loads(request.body)
-        print("DATAAAAAA", data)
+        
         username = data.get('username')
         password = data.get('password')
 
