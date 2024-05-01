@@ -238,8 +238,7 @@ def register(request):
             return JsonResponse({'error': 'Username and password are required.'}, status=400)
         
         if User.objects.filter(username=username).exists():
-            print("USER EXISTS")
-            return JsonResponse({'error': 'Username is already taken.'}, status=400)
+            return JsonResponse({'error': 'Username is already taken.'}, status=409)  # 409 Conflict
         
         print("USER CREATED")
         # Create a new user
