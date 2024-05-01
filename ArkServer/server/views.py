@@ -211,7 +211,7 @@ def get_csrf_token(request):
 @csrf_exempt
 def custom_login(request):
     if request.method == 'POST':
-        print(request.body)
+        print("FIRST PRINT",request.body)
         try:
             data = json.loads(request.body)
             print(data)  # Print the parsed JSON data
