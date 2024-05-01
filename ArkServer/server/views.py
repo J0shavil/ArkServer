@@ -211,30 +211,28 @@ def get_csrf_token(request):
 @csrf_exempt
 def custom_login(request):
     if request.method == 'POST':
-        print("FIRST PRINT",request.body)
+        print("FIRST PRINT", request.body)
         try:
             data = json.loads(request.body)
-            print(data)  # Print the parsed JSON data
+            print("DATAAAAAA", data)  # Print the parsed JSON data
+            username = data.get('username')
+            password = data.get('password')
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                auth_login(request, user)  # Use renamed login function
+                
+                # Check user status code
+                if user.is_active:
+                    return JsonResponse({'message': 'Login successful', 'status_code': 200})
+                else:
+                    return JsonResponse({'error': 'User is inactive', 'status_code': 403}, status=403)
+            else:
+                return JsonResponse({'error': 'Invalid username or password', 'status_code': 400}, status=400)
         except json.JSONDecodeError as e:
             print("Error decoding JSON:", e)
-        data = json.loads(request.body)
-        print("DATAAAAAA", data)
-        username = data.get('username')
-        password = data.get('password')
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            auth_login(request, user)  # Use renamed login function
-            
-            # Check user status code
-            if user.is_active:
-                return JsonResponse({'message': 'Login successful', 'status_code': 200})
-            else:
-                return JsonResponse({'error': 'User is inactive', 'status_code': 403}, status=403)
-        else:
-            return JsonResponse({'error': 'Invalid username or password', 'status_code': 400}, status=400)
+            return JsonResponse({'error': 'Invalid JSON data', 'status_code': 400}, status=400)
     else:
         return JsonResponse({'error': 'Method not allowed', 'status_code': 405}, status=405)
-
 
 @csrf_exempt
 def register(request):
