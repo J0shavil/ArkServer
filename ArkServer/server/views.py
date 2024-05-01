@@ -18,6 +18,7 @@ from .models import Server
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 
 
 logging.basicConfig(level=logging.INFO)
@@ -213,6 +214,27 @@ def login(request):
         return render(request, 'login.html')
 
 
+def register(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        username = data.get('username')
+        password = data.get('password')
+        
+        if not username or not password:
+            return JsonResponse({'error': 'Username and password are required.'}, status=400)
+        
+        if User.objects.filter(username=username).exists():
+            return JsonResponse({'error': 'Username is already taken.'}, status=400)
+        
+        # Create a new user
+        user = User.objects.create_user(username=username, password=password)
+        
+        # Authenticate and login the user
+        login(request, user)
+        
+        return JsonResponse({'message': 'User registered successfully.'})
+    else:
+        return JsonResponse({'error': 'Method not allowed.'}, status=405)
 
 def logout(request):
     logout(request)
