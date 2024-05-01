@@ -212,11 +212,16 @@ def custom_login(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             auth_login(request, user)  # Use renamed login function
-            return JsonResponse({'message': 'Login successful'})
+            
+            # Check user status code
+            if user.is_active:
+                return JsonResponse({'message': 'Login successful', 'status_code': 200})
+            else:
+                return JsonResponse({'error': 'User is inactive', 'status_code': 403}, status=403)
         else:
-            return JsonResponse({'error': 'Invalid username or password'}, status=400)
+            return JsonResponse({'error': 'Invalid username or password', 'status_code': 400}, status=400)
     else:
-        return JsonResponse({'error': 'Method not allowed'}, status=405)
+        return JsonResponse({'error': 'Method not allowed', 'status_code': 405}, status=405)
 
 
 @csrf_exempt
