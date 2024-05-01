@@ -9,7 +9,7 @@ urlpatterns = [
     path('start_ark_server', StartArkServer.as_view(), name="start_ark_server"),
     path('createbat', createserverstartup_bat, name="createbat"),
     path('get_csrf_token/', get_csrf_token, name='get_csrf_token'),
-    path('login', custom_login, name='login'),
+    path('custom_login', custom_login, name='login'),
     path('register', register, name='register'),
        
 ]
