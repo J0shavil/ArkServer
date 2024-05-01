@@ -199,20 +199,25 @@ def get_csrf_token(request):
     return response
 
 
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth import authenticate, login as auth_login  # Rename the login function
+
 @csrf_exempt
-def login(request):
+def custom_login(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         username = data.get('username')
         password = data.get('password')
         user = authenticate(request, username=username, password=password)
         if user is not None:
-            login(request, user)
+            auth_login(request, user)  # Use renamed login function
             return JsonResponse({'message': 'Login successful'})
         else:
             return JsonResponse({'error': 'Invalid username or password'}, status=400)
     else:
         return JsonResponse({'error': 'Method not allowed'}, status=405)
+
 
 @csrf_exempt
 def register(request):
