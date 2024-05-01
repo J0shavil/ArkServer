@@ -206,11 +206,17 @@ def login(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('home')
+            return redirect('https://localhost:3000/')
         else:
             return render(request, '/', {'error_message' : 'Invalid username or passsword.'})
     else:
         return render(request, 'login.html')
+
+
+
+def logout(request):
+    logout(request)
+    return redirect('https://localhost:3000/')
 
 def get_server(request):
     pass
