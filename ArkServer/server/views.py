@@ -212,6 +212,12 @@ def get_csrf_token(request):
 def custom_login(request):
     if request.method == 'POST':
         print(request.body)
+        print(request.body)
+        try:
+            data = json.loads(request.body)
+            print(data)  # Print the parsed JSON data
+        except json.JSONDecodeError as e:
+            print("Error decoding JSON:", e)
         data = json.loads(request.body)
         username = data.get('username')
         password = data.get('password')
