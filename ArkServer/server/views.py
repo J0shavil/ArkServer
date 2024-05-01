@@ -9,16 +9,16 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_POST
 import json
 from django.middleware.csrf import get_token
 from rest_framework import status
 import bcrypt
 from .models import Server
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login as auth_login  # Rename the login function
 
 
 logging.basicConfig(level=logging.INFO)
@@ -105,7 +105,16 @@ class StartArkServer(APIView):
             return Response({"status": "error", "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-
+@login_required
+def get_user_data(request):
+    user = request.user
+    # Assuming you have a UserProfile model associated with the user
+    user_data = {
+        'username': user.username,
+        'email': user.email,
+        # Add any other user-related fields you want to include
+    }
+    return JsonResponse(user_data)
 
 def password_hash(password):
     salt = bcrypt.gensalt()
@@ -198,10 +207,6 @@ def get_csrf_token(request):
     response["Access-Control-Allow-Credentials"] = "true"
     return response
 
-
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth import authenticate, login as auth_login  # Rename the login function
 
 @csrf_exempt
 def custom_login(request):
