@@ -199,7 +199,7 @@ def get_csrf_token(request):
     return response
 
 
-
+@csrf_exempt
 def login(request):
     response = JsonResponse({'message': 'Default message'})
     response["Access-Control-Allow-Origin"] = "http://localhost:3000"
