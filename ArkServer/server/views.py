@@ -229,9 +229,11 @@ def register(request):
         # Create a new user
         user = User.objects.create_user(username=username, password=password)
         
-        # Authenticate and login the user
+        # Authenticate and log in the user
+        auth_user = authenticate(request, username=username, password=password)
+        login(request, auth_user)
         
-        return JsonResponse({'message': 'User registered successfully.'})
+        return JsonResponse({'message': 'User registered and logged in successfully.'})
     else:
         return JsonResponse({'error': 'Method not allowed.'}, status=405)
 
