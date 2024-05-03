@@ -274,6 +274,8 @@ def register(request):
 
 @csrf_exempt
 def logout_view(request):
+    user = request.user
+    print(user)
     logout(request)
     return redirect('https://localhost:3000/')
 
