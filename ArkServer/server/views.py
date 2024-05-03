@@ -223,7 +223,7 @@ def custom_login(request):
                 
                 # Check user status code
                 if user.is_active:
-                    return JsonResponse({'message': 'Login successful', 'status_code': 200})
+                    return JsonResponse({'message': 'Login successful', 'status_code': 200, 'username': username})
                 else:
                     return JsonResponse({'error': 'User is inactive', 'status_code': 403}, status=403)
             else:
