@@ -18,7 +18,7 @@ from django.shortcuts import redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login as auth_login  # Rename the login function
+from django.contrib.auth import authenticate, logout, login as auth_login  # Rename the login function
 
 
 logging.basicConfig(level=logging.INFO)
