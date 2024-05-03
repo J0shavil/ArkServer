@@ -276,7 +276,7 @@ def register(request):
 def logout_view(request):
     user = request.user
     print(user)
-    logout(request)
+    logout(user)
     return redirect('https://localhost:3000/')
 
 def get_server(request):
