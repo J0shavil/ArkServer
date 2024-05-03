@@ -274,7 +274,7 @@ def register(request):
 
 @csrf_exempt
 def logout(request):
-    logout(request.user)
+    logout(request.AnonymousUser)
     return redirect('https://localhost:3000/')
 
 def get_server(request):
