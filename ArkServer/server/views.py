@@ -105,7 +105,9 @@ class StartArkServer(APIView):
             return Response({"status": "error", "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+
 @login_required
+@csrf_exempt
 def get_user_data(request):
     user = request.user
     # Assuming you have a UserProfile model associated with the user
