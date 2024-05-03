@@ -106,7 +106,6 @@ class StartArkServer(APIView):
 
 
 
-@login_required
 @csrf_exempt
 def get_user_data(request):
     user = request.user
