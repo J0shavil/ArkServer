@@ -272,6 +272,7 @@ def register(request):
     else:
         return JsonResponse({'error': 'Method not allowed.'}, status=405)
 
+@csrf_exempt
 def logout(request):
     logout(request)
     return redirect('https://localhost:3000/')
