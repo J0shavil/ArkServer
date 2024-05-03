@@ -112,7 +112,6 @@ def get_user_data(request):
     # Assuming you have a UserProfile model associated with the user
     user_data = {
         'username': user.username,
-        'email': user.email,
         # Add any other user-related fields you want to include
     }
     return JsonResponse(user_data)
