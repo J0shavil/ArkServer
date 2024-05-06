@@ -208,7 +208,7 @@ def get_csrf_token(request):
     return response
 
 
-@csrf_exempt
+
 def custom_login(request):
     if request.method == 'POST':
         print("FIRST PRINT", request.body)
