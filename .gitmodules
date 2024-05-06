@@ -1,3 +1,6 @@
 [submodule "arkserver_react"]
 	path = arkserver_react
 	url = https://github.com/J0shavil/arkserver_react.git
+[submodule "ArkServer/ArkServer/arkserver_react"]
+	path = ArkServer/ArkServer/arkserver_react
+	url = https://github.com/J0shavil/arkserver_react.git
