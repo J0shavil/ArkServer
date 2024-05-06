@@ -80,7 +80,7 @@ CORS_ALLOW_HEADERS = [
     'dnt',
     'origin',
     'user-agent',
-    'x-csrftoken',  # Add X-CSRFToken to the list of allowed headers
+    'x-Csrftoken',  # Add X-CSRFToken to the list of allowed headers
     'x-requested-with',
 ]
 
