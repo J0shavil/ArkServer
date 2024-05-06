@@ -66,6 +66,24 @@ CSRF_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_DOMAIN = None
 
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+    'OPTIONS'  # Add OPTIONS to the list of allowed methods
+]
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',  # Add X-CSRFToken to the list of allowed headers
+    'x-requested-with',
+]
+
 
 TEMPLATES = [
     {
