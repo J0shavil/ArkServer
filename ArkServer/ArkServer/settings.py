@@ -59,12 +59,19 @@ ROOT_URLCONF = 'ArkServer.urls'
 
 CSRF_TRUSTED_ORIGINS = ['http://localhost:3000' ]
 
+CORS_ALLOWED_Origins = [
+    'http://localhost:3000'
+]
+
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 CSRF_COOKIE_SECURE = False
-CSRF_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SAMESITE = 'none'
 CSRF_COOKIE_HTTPONLY = False
-CSRF_COOKIE_DOMAIN = None
+CSRF_COOKIE_DOMAIN = 'localhost'
+CSRF_COOKIE_NAME = 'X-CSRFToken'
+
+
 
 CORS_ALLOW_METHODS = [
     'GET',
@@ -80,10 +87,11 @@ CORS_ALLOW_HEADERS = [
     'dnt',
     'origin',
     'user-agent',
-
-    'x-Csrftoken',  # Add X-CSRFToken to the list of allowed headers
+    'csrftoken',
+    'x-csrftoken',  # Add X-CSRFToken to the list of allowed headers
     'x-requested-with',
 ]
+
 
 
 TEMPLATES = [
