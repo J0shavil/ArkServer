@@ -18,7 +18,7 @@ from django.shortcuts import redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, logout, login as auth_login  # Rename the login function
+from django.contrib.auth import authenticate, logout, login  # Rename the login function
 
 
 logging.basicConfig(level=logging.INFO)
@@ -219,7 +219,7 @@ def custom_login(request):
             password = data.get('password')
             user = authenticate(request, username=username, password=password)
             if user is not None:
-                auth_login(request, user)  # Use renamed login function
+                login(request, user)  # Use renamed login function
                 
                 # Check user status code
                 if user.is_active:
