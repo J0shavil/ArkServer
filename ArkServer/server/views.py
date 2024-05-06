@@ -210,6 +210,7 @@ def get_csrf_token(request):
 
 
 def custom_login(request):
+    print(request.body)
     if request.method == 'POST':
         print("FIRST PRINT", request.body)
         try:
